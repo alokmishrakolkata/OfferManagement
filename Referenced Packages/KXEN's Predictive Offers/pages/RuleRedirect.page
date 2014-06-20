@@ -1,0 +1,3 @@
+<apex:page standardController="Offers__Rule__c" extensions="Offers.RuleRedirectController" action="{!redirectRule}">
+	<apex:pageMessages />
+</apex:page>

@@ -1,0 +1,140 @@
+<apex:page controller="Offers.ConfigurationController" action="{!init}">
+
+<style type="text/css">
+        
+        .activeTab {background-color: white; color:black; 
+         background-image:none}
+   		.inactiveTab {background-color: lightgrey; color:black; 
+                 background-image:none}
+    
+</style>
+
+	<apex:sectionHeader title="Predictive Offers" subtitle="Predictive Offers Administration"/>
+    
+    <apex:tabPanel switchType="client" value="{!selectedTab}" id="theTabPanel" tabClass="activeTab" 
+               inactiveTabClass="inactiveTab">
+    	<apex:tab label="Settings" name="settings" id="tabOne">
+    		<apex:outputPanel id="rerenderPanel">
+		    <apex:form >
+		    <apex:pageBlock mode="{!pageBlockMode}">
+		      <apex:pageBlockButtons >
+		        <apex:commandButton value="Save" action="{!save}" rendered="{!isEdit}"/>
+		        <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!isEdit}"/>
+		        <apex:commandButton value="Edit" action="{!edit}" rendered="{!!isEdit}"/>
+		      </apex:pageBlockButtons>
+		      <apex:pageMessages escape="false" />
+		      <apex:actionRegion >
+		      <apex:pageBlockSection title="General Settings" columns="1">
+		        <apex:selectList label="Administrator" value="{!admin}" size="1" rendered="{!isEdit}">
+		          <apex:selectOptions value="{!users}"/>
+		        </apex:selectList>
+		        <apex:outputText label="Administrator" value="{!adminName}" rendered="{!!isEdit}"/>
+		        <apex:selectList label="Offer Source" value="{!serviceType}" size="1" rendered="{!isEdit}">
+		          <apex:actionSupport event="onchange" rerender="rerenderPanel" status="status" action="{!initParam}" />
+		          <apex:selectOptions value="{!selectableServiceTypes}"/>
+		        </apex:selectList>
+		        <apex:outputText label="Offer Source" value="{!serviceLabel}" rendered="{!!isEdit}"/>
+		        <apex:outputText label="Post Execution Rules Class" value="{!postRulesClass}" rendered="{!!isEdit}"/>
+		        <apex:inputText label="Post Execution Rules Class" value="{!postRulesClass}" rendered="{!isEdit}"/>
+		        <apex:outputText label="Answer Handler Class" value="{!answerHandlerClass}" rendered="{!!isEdit}"/>
+		        <apex:inputText label="Answer Handler Class" value="{!answerHandlerClass}" rendered="{!isEdit}"/>
+		        <apex:outputText label="Class Name" value="{!param}" rendered="{!AND(serviceType == 'CUSTOM', !isEdit)}"/>
+		        <apex:inputText label="Class Name" value="{!param}" size="75" rendered="{!AND(serviceType == 'CUSTOM', isEdit)}"/>
+		        <apex:outputText label="Offer Service URL" value="{!param}" rendered="{!AND(serviceType == 'EXTERNAL', !isEdit)}"/>
+		        <apex:inputText label="Offer Service URL" value="{!param}" size="75" rendered="{!AND(serviceType == 'EXTERNAL', isEdit)}"/>
+		        <apex:inputCheckbox label="Use Offer Cache" value="{!cacheActivated}" rendered="{!serviceType == 'KXEN'}" disabled="{!!isEdit}"/>
+		        <apex:inputCheckbox label="Show Why Button" value="{!showWhyButton}" rendered="{!serviceType == 'KXEN'}" disabled="{!!isEdit}"/>
+		        <apex:outputText label="Retrain Threshold (response count)" value="{!retrainThreshold}" rendered="{!AND(serviceType == 'KXEN', !isEdit)}"/>
+		        <apex:inputText label="Retrain Threshold (response count)" value="{!retrainThreshold}" rendered="{!AND(serviceType == 'KXEN', isEdit)}"/>
+		     	<apex:selectList label="Default OfferSet" value="{!defaultOfferSet}" size="1" rendered="{!isEdit}">
+		          <apex:selectOptions value="{!avaibleOfferSet}"/>
+		        </apex:selectList>
+		        <apex:pageBlockSectionItem rendered="{!!isEdit}">
+		        	<apex:outputLabel value="Default OfferSet" for="offersetLink"/>
+		        	<apex:outputLink value="/apex/OfferSet?id={!defaultOfferSet}"  id="offersetLink">{!defaultOfferSetName}</apex:outputLink>
+		        </apex:pageBlockSectionItem>
+		      </apex:pageBlockSection>
+		      
+		      <apex:actionStatus startText="loading settings ..." id="status"/>
+		      
+		      <apex:pageBlockSection title="Self-Learning" columns="1" rendered="{!serviceType == 'KXEN'}">
+		        The Learning Rate controls the likelihood that a not-yet-predictable
+		        offer will be shown to a user at random instead of a guided offer. The
+		        higher the Learning Rate is, the faster new offers will learn themselves
+		        and become guided offers. It is expressed as a percentage; for instance,
+		        a learning rate of 5% means that 5% of the time Predictive Offers is
+		        called upon to make an offer, it will show an offer from among the set
+		        of not-yet-predictable offers.
+		        <apex:outputText label="Learning Rate" value="{0, number, ##.#'%'}" rendered="{!!isEdit}">
+		          <apex:param value="{!learningRate}"/>
+		        </apex:outputText>
+		        <apex:inputText label="Learning Rate (%)" value="{!learningRate}" rendered="{!isEdit}"/>
+		        The Improvement Rate controls the likelihood that a guided offer will
+		        be presented at random instead of the guided offer currently deemed
+		        best by the self-learning engine. This enables the engine to adjust its
+		        guidance for existing offers. It is expressed as a percentage; for
+		        instance, an improvement rate of 1% means that 1% of the time
+		        Predictive Offers is called upon to make an offer, it will show a
+		        random offer from the set of guided offers rather than the topmost
+		        ranked one.
+		        <apex:outputText label="Improvement Rate" value="{0, number, ##.#'%'}" rendered="{!!isEdit}">
+		          <apex:param value="{!improvementRate}"/>
+		        </apex:outputText>
+		        <apex:inputText label="Improvement Rate (%)" value="{!improvementRate}" rendered="{!isEdit}"/>
+		        The refresh frequency affects how long cached scores remain valid before 
+		        they are recalculated.  Cached scores will automatically be recalculated 
+		        when a Contact or Lead changes; however it is also necessary to recalculate 
+		        them periodically, even in the absence of a Contact or Lead change, 
+		        to ensure that they are correct.
+		        <apex:outputText label="Refresh Frequency (days)" value="{!refreshInterval}" rendered="{!!isEdit}"/>
+		        <apex:inputText label="Refresh Frequency (days)" value="{!refreshInterval}" rendered="{!isEdit}"/>
+		      </apex:pageBlockSection>
+		      </apex:actionRegion>
+		    </apex:pageBlock>
+		    </apex:form>
+		    
+    			<apex:pageBlock rendered="{!serviceType == 'KXEN'}" >
+	      			<apex:pageBlockSection title="Offers" columns="1">
+	        			<apex:listViews type="Offers__Offer__c" />
+	      			</apex:pageBlockSection>
+    			</apex:pageBlock>
+    		</apex:outputPanel>
+		</apex:tab>
+
+    	<apex:tab label="OfferSet Rules" name="offersetrules" id="tabTwo">
+    	<apex:form >
+			<apex:pageBlock title="OfferSet Rules">
+    			<apex:pageBlockButtons >
+    				<apex:commandButton id="reorderOfsRuleButton" action="{!reorderOfsRule}" value="Reorder" rendered="{!OfsRuleMode==null}"/>
+    				<apex:commandButton id="saveOfsRuleButton" action="{!saveOfsRule}" value="Save" rendered="{!OfsRuleMode=='reorder'}"/>
+    				<apex:commandButton id="cancelOfsRuleButton" action="{!cancelOfsRule}" value="Cancel" rendered="{!OfsRuleMode=='reorder'}"/>
+    			</apex:pageBlockButtons>
+        		<apex:pageBlockTable value="{!ofsRules}" var="rule">
+		        	<apex:column >
+						<apex:facet name="header">Order</apex:facet>
+						<apex:outputField value="{!rule.Offers__Order__c}"/>
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header">Rule Name</apex:facet>
+						<apex:outputLink value="/apex/CriteriaRule?id={!rule.Id}" >{!rule.name}</apex:outputLink>
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header">OfferSet Name</apex:facet>
+						<apex:outputLink value="/apex/OfferSet?id={!rule.OfferSetId__r.Id}" >{!rule.OfferSetId__r.Name}</apex:outputLink>
+					</apex:column>
+				</apex:pageBlockTable>
+				<div style="display:{!if(OfsRuleMode=='reorder',"block","none")}; margin-left: 40%;">
+		       		<c:DuelingListBox leftOptions="{!unSelectedValues}" 
+						rightOptions="{!selectedValues}" 
+						leftLabel=" " 
+						rightLabel=" "
+						shouldOrder="true"
+						shouldSelect="false"
+						size="15"
+						width="300" />
+				</div>
+    		</apex:pageBlock>
+    		</apex:form>
+    	</apex:tab>
+    </apex:tabPanel>
+</apex:page>

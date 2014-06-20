@@ -1,0 +1,11 @@
+<apex:page standardController="Offers__OfferSet__c" recordSetVar="OfferSets">
+	<apex:includeScript value="{!$Resource.Offers__jquery}"/>
+	<apex:pageBlock >
+        <apex:listViews type="Offers__OfferSet__c" />
+    </apex:pageBlock>
+
+    <script type="text/javascript">
+        $j = jQuery.noConflict();
+        $j('tr.dataRow').has("img[src$='checkbox_checked.gif']").children('td:first').children().eq(1).text("");
+	</script>
+</apex:page>

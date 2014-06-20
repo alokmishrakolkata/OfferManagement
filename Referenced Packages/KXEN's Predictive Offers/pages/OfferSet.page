@@ -1,0 +1,30 @@
+<apex:page standardController="Offers__OfferSet__c" extensions="Offers.OfferSetController">
+	<apex:includeScript value="{!$Resource.Offers__jquery}"/>
+
+	<apex:sectionHeader title="OfferSet" subtitle="{!offerset.Name}" />
+	<apex:form >
+		<apex:pageBlock >
+		<apex:pageMessages />
+			<apex:pageBlockButtons >
+				<apex:commandButton id="editButton" action="{!edit}" value="Edit" rendered="{!isModeView}"/>
+				<apex:commandButton id="saveButton" action="{!save}" value="Save" rendered="{!!isModeView}"/>
+				<apex:commandButton id="deleteButton" action="{!remove}" value="Delete" rendered="{!isModeView}"/>
+				<apex:commandButton id="cancelButton" action="{!cancel}" value="Cancel" rendered="{!!isModeView}"/>
+			</apex:pageBlockButtons>
+		
+			<apex:pageBlockSection title="OfferSet Settings">
+				<apex:outputField value="{!offerset.Name}" rendered="{!isModeView}"/>
+				<apex:inputField value="{!offerset.Name}" rendered="{!!isModeView}"/>
+				<apex:outputField value="{!offerset.Offers__Default__c}" rendered="{!isModeView}"/>
+				<apex:outputField value="{!offerset.OwnerId}" rendered="{!isModeView}"/>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+	<apex:relatedList list="OfferSetOfferAssociations__r" rendered="{!isModeView}"/>
+
+	<script type="text/javascript">
+        $j = jQuery.noConflict();
+        $j(".actionLink").text("Remove");
+	</script>
+
+</apex:page>

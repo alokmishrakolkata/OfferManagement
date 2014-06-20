@@ -1,0 +1,36 @@
+<apex:component controller="Offers.OfferImageController" allowDML="True">
+  <apex:attribute name="c_tag"
+                  description=""
+                  type="String"
+                  required="true"
+                  assignTo="{!tag}"/>
+  <apex:attribute name="c_ctl"
+                  description=""
+                  type="Offers.Offer"
+                  required="true"
+                  assignTo="{!ctl}"/>
+  <div>
+    <apex:outputLabel value="{!label}" styleClass="offer_label"/>
+    <div class="offer_c">
+      <div class="{!IF(isClearSrc, 'offer_dropzone_wrap', 'offer_image_wrap')}" style="width:{!width}px; height:{!height}px;{!IF(hasChanged, 'border-color:#fe6a00;', '')}">
+      <div class="offer_dropzone" style="width:{!width}px; height:{!height}px;">
+        <div id="offer_dropzone_text"><em>{!width}x{!height}</em> image</div>
+        <apex:outputPanel rendered="{!!isClearSrc}">
+          <div id="offer_dropzone_image">
+          <img id="image_{!tag}" src="{!src}" style="width:{!width}px; height:{!height}px;">
+            <span id="img_title">image: {!src}
+              <apex:commandLink action="{!clearSrc}" value="[delete]"/>
+            </span>
+          </img>
+          </div>
+          <br/>
+        </apex:outputPanel>
+      </div>
+      </div>
+      <div class="offer_dropfallback">
+        <apex:inputFile value="{!document.body}" filename="{!document.name}"/>
+        <apex:commandButton value="Upload" action="{!Upload}"/>
+      </div>
+    </div>
+  </div>
+</apex:component>

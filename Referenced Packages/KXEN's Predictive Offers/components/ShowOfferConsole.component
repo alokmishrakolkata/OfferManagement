@@ -1,0 +1,238 @@
+<apex:component controller="Offers.ShowOffersController" access="global"  allowDML="true">
+      <script type="text/javascript">
+            
+            window.onload = function() {
+                sforce.connection.sessionId = '{!$Api.Session_ID}';
+                init();
+           }
+           </script>
+    
+    <apex:attribute name="contactOrLeadId" description="user id" type="String"  assignTo="{!currentUserId}" access="global"/>
+   
+    <apex:outputPanel id="comp">
+    
+    <apex:outputPanel rendered="{!refreshPage}">
+        <script type="text/javascript">
+          refreshTab();
+        </script>
+    </apex:outputPanel>
+    
+    <apex:includeScript value="/support/console/25.0/integration.js"/>
+    <apex:includeScript value="/soap/ajax/15.0/connection.js"/>
+    <apex:includeScript value="/soap/ajax/15.0/apex.js"/>
+    <apex:includeScript value="{!$Resource.Offers__jquery}"/>
+    <apex:includeScript value="{!$Resource.Offers__quickflip}"/>
+    <apex:includeScript value="{!$Resource.Offers__NbaJs}"/>
+  
+    <style type="text/css">
+    .offerContainerTop {
+        font-family: Arial, Helvetica, sans-serif;
+        width: 250px;
+        background-color: #1F6A8A;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        border: 1px solid #1F6A8A;
+        padding: 0px;
+        text-align:left;
+        vertical-align:middle;
+        overflow: hidden;
+    }
+    .boTitle {
+        font-size: 14px;
+        color: #FFFFFF;
+        font-weight:bold;
+        padding-left: 7px;
+        padding-top: 9px;
+        float: left;
+        border: 0px 0px 0px 0px;
+        vertical-align:middle;
+    }
+    .offerContainerBottom {
+        font-family: Arial, Helvetica, sans-serif;
+        width: 250px;
+        background-color: #1F6A8A;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        border: 1px solid #1F6A8A;
+        padding: 0px;
+        text-align:left;
+    }
+    .offerContainerBody {
+        width: 250px;
+        height: 250px;
+        background-color: #F9F9F9;
+        border-top: 0px;
+        border-bottom: 0px;
+        border-left: 1px solid #1F6A8A;
+        border-right: 1px solid #1F6A8A;
+        padding: 0px;
+        overflow:hidden;
+    }
+    .quickflip-thumbnail{
+        padding: 17px;
+        float: right;
+        text-align:right;
+        border: 0px 0px 0px 0px;
+        position: relative;
+    }
+    .boButtonBar {
+        font-size: 12px;
+        color: #FFFFFF;
+        font-weight:bold;        
+        Padding-left: 7px;
+        vertical-align: middle;
+    }
+    .boButton {
+        border:0px;
+        border-radius: 3px;
+        background-color: #E1E3E6;
+        color: #222222;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        font-weight:bold;
+        width: 50px;
+        padding: 5px 7px;
+        vertical-align:middle;
+        margin-left: 6px;
+        margin-bottom: 5px;
+        margin-top: 5px;
+    }
+    .boButton:hover {
+        background-color: #F6F7FB;
+        cursor:pointer;
+    }
+    </style>
+    
+   <script type="text/javascript">
+            //refresh after accept or reject
+            function refreshTab() {
+                sforce.console.getFocusedPrimaryTabId(refreshPrimaryTab);
+            }
+            var refreshPrimaryTab = function refreshPrimaryTab (result) {
+               sforce.console.refreshPrimaryTabById(result.id,true);
+            }
+
+        var baseUrl = '';
+        var subUrl = '';
+
+        function openExplainChart(offerId, userId, proba){
+            var namespace = getOffersNameSpace();
+            baseUrl = '/apex/'+namespace+'ExplainChart?model='+offerId+ '&user='+userId+'&proba='+proba ;
+            sforce.console.getFocusedPrimaryTabId(openWhySubTab);
+        }
+
+        var openWhySubTab = function openWhySubTab (result) {
+            sforce.console.openSubtab(result.id, baseUrl, true, '', null);
+        }
+        
+        function openYesTab(){
+            var namespace = getOffersNameSpace().replace('__', '.');
+            subUrl = sforce.apex.execute(namespace + "ShowOffersController", "getYesUrl", {offerId:"{!eligible.id}", userId:"{!currentUserId}"});
+            if (subUrl != ''){
+				sforce.console.getFocusedPrimaryTabId(openYTab);
+            }
+        }
+
+        var openYTab = function openYTab (result) {
+            sforce.console.openSubtab(result.id, subUrl, true, 'Yes Page', null);
+        }
+
+        function openNoTab(){
+            var namespace = getOffersNameSpace().replace('__', '.');
+            subUrl = sforce.apex.execute(namespace + "ShowOffersController", "getNoUrl", {offerId:"{!eligible.id}", userId:"{!currentUserId}"});
+            if (subUrl != ''){
+				sforce.console.getFocusedPrimaryTabId(openNTab);
+            }
+        }
+
+        var openNTab = function openNTab (result) {
+            sforce.console.openSubtab(result.id, subUrl, true, 'No Page', null);
+        }
+
+       $(function() {
+          $('.quickflip-thumbnail').quickFlip({
+              closeSpeed:300,
+              openSpeed:300
+          });
+          
+          $('.quickflip').quickFlip({
+              closeSpeed:300,
+              openSpeed:300
+          });
+         
+          $('.quickflip').click(function(event) {
+           if(event.target.id == "image"){
+               $('.quickflip-thumbnail').quickFlipper({
+                    closeSpeed:300,
+                    openSpeed:300
+                });
+           }        
+          });
+     
+         $('.quickflip-thumbnail').click(function() {
+            $('.quickflip').quickFlipper({
+                closeSpeed:300,
+                openSpeed:300
+            });
+         });
+       });    
+       
+         // Pre load images for rollover
+                        if (document.images) {
+                            nohover= new Image;
+                            hover= new Image;
+
+                            nohover.src = "{!$Resource.flipper_24}";
+                            hover.src = "{!$Resource.flipper_24_hover}";
+                        }
+                        function swapImage(thisImage,newImage) {
+                            if (document.images) {
+                                document[thisImage].src = eval(newImage + ".src");
+                            }
+                        }
+   </script>
+    
+    <apex:variable var="image" value="{!IF(loading, $Resource.Offers__loading, IF(isEligible, eligible.consoleImgUrl, $Resource.Offers__no_offer_console))}"/>
+    <apex:variable var="text" value="{!IF(isEligible, eligible.script, errorMessage)}"/>
+    
+       <apex:form >
+       
+       <apex:actionFunction name="init" action="{!initOffers}" rerender="comp" immediate="true"/>
+       <center>
+           <div class="offerContainerTop">
+              <div class="boTitle">Best Offer</div>
+              <div class="quickflip-thumbnail" > 
+                  <div>                     
+                      <a onMouseOver="swapImage('tintin','hover')" onMouseOut="swapImage('tintin','nohover')">
+                          <img src="{!$Resource.flipper_24}" width="24" height="24" class="quickFlipCta" style="padding: 5px; position: absolute;" name="tintin"/>
+                      </a>
+                  </div>
+                  <div><img src="{!image}" width="24" height="24" alt="Piggy" class="quickFlipCta" style="padding: 5px; position: absolute;"/></div>
+              </div>
+            </div>
+            
+            <div class="offerContainerBody">    
+              <div class="quickflip" >  
+                  <div><img src="{!image}" width="250" height="250" alt="Offer Console Image" class="quickFlipCta" id="image" /></div>
+                  <div><p id="text">{!text}</p></div>     
+              </div> 
+            </div>
+  
+            <div class="offerContainerBottom">
+              <div class="boButtonBar">
+                  Interested?
+                  <apex:commandButton action="{!acceptOffer}" value="Yes" id="accept" style="margin-left:7px" disabled="{!!isEligible}" reRender="comp" onClick="javascript:openYesTab()"/>
+                  <apex:commandButton action="{!rejectOffer}" value="No" id="reject" immediate="true" disabled="{!!isEligible}" reRender="comp" onClick="javascript:openNoTab()"/>
+                  <apex:commandButton action="{!none}" value="Why?" id="why" rendered="{!showWhy}" onClick="javascript:openExplainChart('{!eligible.id}', '{!currentUserId}', '{!eligible.probability}')" reRender="comp"/>
+              </div>
+            </div>
+        </center>
+     </apex:form>
+     
+      <script type="text/javascript">
+       //remove the "btn" class added by apex:commandButton
+        $("input").attr("class", "boButton");
+   </script>   
+  </apex:outputPanel>
+    
+</apex:component>

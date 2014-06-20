@@ -1,0 +1,103 @@
+<apex:page controller="Offers.ExplainChartController"  showHeader="false" sidebar="false">
+
+    <apex:includeScript value="/support/console/25.0/integration.js"/>
+    <apex:includeScript value="{!$Resource.Offers__jquery}"/>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    
+    <apex:sectionHeader title="Offer" subtitle="{!offerName} for {!userName}"/>
+    <apex:outputText value="Predicted Probability       {!proba}%" style="margin-left: 37px; font-size: 15px;font-weight: bold;"/>
+    <div id="explainChart"/>
+	<script type="text/javascript">  
+
+		function setTabTitle() {
+			sforce.console.setTabTitle('{!JSENCODE(offerName)} for {!JSENCODE(userName)}');
+		}
+
+		var previousOnload = window.onload;
+		window.onload = function() {
+			if (previousOnload) {
+				previousOnload();
+			}
+			setTimeout('setTabTitle()', '500'); 
+		}
+	</script>
+
+    <script type="text/javascript">
+		$j = jQuery.noConflict();
+        google.load('visualization', '1.0', {'packages':['corechart']});
+        var visualization = null;
+        var variableData = null;
+        google.setOnLoadCallback(initCharts);
+
+        function initCharts() {
+          Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.ExplainChartController.loadChartInfo}',
+                '{!HTMLENCODE(offerId)},{!HTMLENCODE(userId)}',
+                function(result, event){  
+                     visualization = new google.visualization.BarChart(document.getElementById('explainChart'));
+                     variableData = new google.visualization.DataTable();
+                     variableData.addColumn('string', 'Variable');
+                     variableData.addColumn('number', 'Contribution');
+                     for(var i =0; i<result.length;i++){
+                        var r = result[i];
+                        variableData.addRow([r.name, r.contribution]);
+                      }
+                    visualization.draw(variableData, 
+                                        {legend : {position: 'none'}, 
+                                        width:window.innerWidth-350,
+                                        height:400,
+                                        colors: ['#008ED6'],
+                                        enableInteractivity : false,
+                                        chartArea: { top: 30, left: 300, width:"60%",height:"90%" },
+                                        vAxis:{textStyle:{fontSize: 15}},
+                                        hAxis:{textStyle:{fontSize: 15},
+                                        showTextEvery:1,
+                                        slantedText:false}});
+
+						$j("text").each(function(i,el) {
+								if (navigator.userAgent.indexOf("MSIE")> -1){//for IE
+									el.textContent = el.textContent.replace(':', '  ');
+								}else{
+									var g = el.parentNode;
+									var x = el.getAttribute('x');
+									var y = el.getAttribute('y');
+									var width = el.getAttribute('width') ;
+									var height = el.getAttribute('height') ;
+
+									// A "ForeignObject" tag is how you can inject HTML into an SVG document.
+									var fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+									fo.setAttribute('x', x - 250);
+									fo.setAttribute('y', y - 15);
+									fo.setAttribute('height', 50);
+									fo.setAttribute('width', 300);
+
+									var body = document.createElementNS("http://www.w3.org/1999/xhtml", "BODY");
+									var t1 = document.createElement("Text");
+									t1.setAttribute("style", "font-size:15px;font-style:italic;");
+									t1.innerHTML = el.textContent.split(':')[0] +'&nbsp&nbsp';
+
+									body.appendChild(t1);
+									var t2 = document.createElement("Text");
+									t2.setAttribute("style", "font-size:15px;");
+									t2.innerHTML = el.textContent.split(':')[1] + ':&nbsp';
+
+									body.appendChild(t2);
+
+									var t3 = document.createElement("Text");
+									t3.setAttribute("style", "font-size:15px;font-weight:bold");
+									t3.innerHTML = el.textContent.split(':')[2];
+
+									body.appendChild(t3);
+									fo.appendChild(body);
+
+									// Remove the original SVG text and replace it with the HTML.
+									g.removeChild(el);
+									g.appendChild(fo);
+								}
+					});
+
+                }, {escape:true});
+         }
+
+    </script>
+</apex:page>

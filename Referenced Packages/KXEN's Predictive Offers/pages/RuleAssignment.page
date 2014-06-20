@@ -1,0 +1,20 @@
+<apex:page controller="Offers.RuleAssignmentController" tabStyle="Offers__Offer__c">
+	<apex:sectionHeader title="Offer" subtitle="Associate Rules Offer Name"/>
+	<apex:form >
+		<apex:pageBlock >
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton id="saveButton" action="{!save}" value="Save"/>
+				<apex:commandButton id="cancelButton" action="{!cancel}" value="Cancel" immediate="true"/>
+			</apex:pageBlockButtons>
+			<apex:outputText value="Choose the Rules That Apply to {!offer.Name}"/>
+			<c:DuelingListBox leftOptions="{!unSelectedValues}" 
+				rightOptions="{!selectedValues}" 
+				leftLabel="Availble Rules" 
+				rightLabel="Selected Rules"
+				shouldOrder="true"
+				shouldSelect="true"
+				size="15"
+				width="300"/>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

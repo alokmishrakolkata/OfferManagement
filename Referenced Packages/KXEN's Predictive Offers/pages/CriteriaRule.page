@@ -1,0 +1,110 @@
+<apex:page standardController="Offers__Rule__c" extensions="Offers.CriteriaRuleController">
+	<apex:includeScript value="/soap/ajax/15.0/connection.js"/>
+	<apex:includeScript value="/soap/ajax/15.0/apex.js"/>
+
+	<apex:pageMessages />
+	<apex:sectionHeader title="Eligibility Rule New" subtitle="New Rule" rendered="{!AND(isModeNew,isEligibilityRule)}"/>
+	<apex:sectionHeader title="Eligibility Rule" subtitle="{!rule.Name}" rendered="{!AND(isModeView,isEligibilityRule)}"/>
+	<apex:sectionHeader title="Eligibility Rule Edit" subtitle="{!rule.Name}" rendered="{!AND(isModeEdit,isEligibilityRule)}"/>
+	<apex:sectionHeader title="OfferSet Rule New" subtitle="New Rule" rendered="{!AND(isModeNew,isOfferSetRule)}"/>
+	<apex:sectionHeader title="OfferSet Rule" subtitle="{!rule.Name}" rendered="{!AND(isModeView,isOfferSetRule)}"/>
+	<apex:sectionHeader title="OfferSet Rule Edit" subtitle="{!rule.Name}" rendered="{!AND(isModeEdit,isOfferSetRule)}"/>
+
+	<apex:form >
+
+		<apex:actionFunction name="updateFieldList" rerender="fieldList" />
+		<apex:actionFunction name="updateObjectList" action="{!setObject}" rerender="objectList,fieldList" />
+		<apex:actionFunction name="updateValueColumn"  rerender="valueColumn" />
+		<apex:actionFunction name="addOneRow" action="{!addRow}" rerender="critetiaTable,logicPanel" />
+		<apex:actionFunction name="removeOneRow" action="{!removeRow}" rerender="critetiaTable,logicPanel" />
+		<apex:actionFunction name="addLogic" action="{!addLogic}" rerender="critetiaTable,logicPanel" />
+		<apex:actionFunction name="clearLogic" action="{!clearFilterLogic}" rerender="critetiaTable,logicPanel" />
+		<apex:actionFunction name="updateSelf"  rerender="" />
+
+		<apex:pageBlock >
+			<apex:pageBlockButtons >
+				<apex:commandButton id="saveButton" action="{!save}" value="Save" rendered="{!!isModeView}"/>
+				<apex:commandButton id="saveAndNewButton" action="{!saveNew}" value="Save & New" rendered="{!isModeNew}"/>
+				<apex:commandButton id="cancelButton" action="{!cancel}" value="Cancel" immediate="true" rendered="{!!isModeView}"/>
+				<apex:commandButton id="editButton" action="{!edit}" value="Edit" rendered="{!isModeView}"/>
+				<apex:commandButton id="deleteButton" action="{!delete}" value="Delete" immediate="true" rendered="{!isModeView}"/>
+			</apex:pageBlockButtons>
+
+			<apex:pageBlockSection title="Information">
+				<apex:inputField value="{!rule.Name}" rendered="{!!isModeView}"/>
+				<apex:outputText value="" rendered="{!!isModeView}"/>
+				<apex:inputField value="{!rule.Offers__Explanation__c}" rendered="{!!isModeView}"/>
+				<apex:outputText value="{!rule.Name}" rendered="{!isModeView}"/>
+				<apex:outputText value="{!rule.Owner.Name}" rendered="{!isModeView}" label="Owner"/>
+				<apex:outputText value="{!rule.Offers__Explanation__c}" rendered="{!isModeView}"/>
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection title="Select the criteria for this rule" columns="1">
+				<apex:outputText value="Exclude the offer if the following criteria are met" rendered="{!isEligibilityRule}"/>
+				<apex:outputText value="Choose the OfferSet if the following criteria are met" rendered="{!isOfferSetRule}"/>
+				<apex:pageBlockSectionItem rendered="{!AND(isModeView,isOfferSetRule)}">
+				<apex:outputLabel value="OfferSet" for="offersetLink"/>
+					<apex:outputLink value="/apex/OfferSet?id={!rule.Offers__OfferSetId__c}"  id="offersetLink">{!offerSetName}</apex:outputLink>
+		        </apex:pageBlockSectionItem>
+				<apex:selectList label="OfferSet" value="{!rule.Offers__OfferSetId__c}" size="1" rendered="{!AND(!isModeView,isOfferSetRule)}">
+					<apex:selectOptions value="{!offerSetList}"/>
+				</apex:selectList>
+				<apex:outputText value="{!rule.Offers__Master_Object__c}" rendered="{!isModeView}"/>
+				<apex:selectList label="Rule Target" value="{!rule.Offers__Master_Object__c}" size="1" onchange="updateObjectList();" rendered="{!!isModeView}">
+					<apex:selectOptions value="{!ruleTargetList}"/>
+				</apex:selectList>
+				<apex:pageBlockTable value="{!criteriaList}" var="item" id="critetiaTable">
+					<apex:column value="{!item.rank}" title="rank"/>
+			        <apex:column headerValue="object">
+						<apex:outputText value="{!item.objetLabel}" rendered="{!isModeView}"/>
+						<apex:selectList label="" value="{!item.objet}" size="1" onchange="updateFieldList();" id="objectList" rendered="{!!isModeView}">
+							<apex:selectOptions value="{!objectList}" />
+						</apex:selectList>
+					</apex:column>
+					<apex:column headerValue="field">
+						<apex:outputText value="{!item.fieldLabel}" rendered="{!isModeView}"/>
+						<apex:selectList label="" value="{!item.field}" id="fieldList" size="1" rendered="{!!isModeView}" onchange="updateValueColumn();">
+							<apex:selectOptions value="{!item.fieldList}"/>
+						</apex:selectList>
+					</apex:column>
+					<apex:column headerValue="operator">
+						<apex:outputText value="{!item.operatorLabel}" rendered="{!isModeView}"/>
+						<apex:selectList value="{!item.operator}" size="1" rendered="{!!isModeView}">
+							<apex:selectOptions value="{!operatorList}" />
+						</apex:selectList>
+					</apex:column>
+					<apex:column headerValue="value" id="valueColumn">
+						<apex:inputText value="{!item.value}" rendered="{!AND(!isModeView, item.valueList == null)}" onchange="updateSelf();"/>
+						<apex:selectList label="" value="{!item.value}" size="1" rendered="{!AND(!isModeView, item.valueList != null)}" onchange="updateSelf();">
+							<apex:selectOptions value="{!item.valueList}"/>
+						</apex:selectList>
+						<apex:outputText value="{!item.value}" rendered="{!isModeView}"/>
+					</apex:column>
+					<apex:column headerValue="" style="display:{!if(!AND(rule.Offers__Filter_Logic__c == '',!!isModeView),"","none")};">
+						<apex:outputText value="{!item.defaultLogic}" style="display:{!if(rule.Offers__Filter_Logic__c == '',"block","none")};"/>
+					</apex:column>
+				</apex:pageBlockTable>
+			</apex:pageBlockSection>
+
+			<apex:outputPanel id="logicPanel">
+				<div style="display:{!if(rule.Offers__Filter_Logic__c == '',"block","none")};" id="addLogicLink">
+					<a href="javascript:addLogic();" style="display:{!if(!isModeView,"block","none")};">Add Filter Logic...</a>
+				</div>
+				<div style="display:{!if(rule.Filter_Logic__c == '',"none","block")};" id="logicBlock">
+					<div style="display:{!if(isModeView,"none","block")};">
+						<a href="javascript:addOneRow();" >Add Row</a>
+						<a href="javascript:removeOneRow();" style="display:{!if(criteriaList.size > 5 ,"inline","none")};">Remove Row</a>
+						<label style="display:{!if(criteriaList.size > 5,"none","inline")};">Remove Row</label><br/><br/>
+						<a href="javascript:clearLogic();" >Clear Filter Logic</a>
+					</div>
+					<label>Filter Logic:</label>
+					<apex:inputField value="{!rule.Offers__Filter_Logic__c}" rendered="{!!isModeView}" style="width: 40em;" id="filterLogic_validation"/>
+					<apex:outputText value="{!rule.Offers__Filter_Logic__c}" rendered="{!isModeView}"/>
+					<a href="javascript:window.open('https://help.salesforce.com/htviewhelpdoc?err=1&id=working_with_advanced_filter_conditions_in_reports_and_list_views.htm&siteLang=en_US');">
+					<img src="{!$Resource.helpicon}" title="Help" ></img></a>
+					<apex:image id="theImage" value="{!$Resource.Offers__report_boolean_filter}" style="display:block"/>
+				</div>
+			</apex:outputPanel>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

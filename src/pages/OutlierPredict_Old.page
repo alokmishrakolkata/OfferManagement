@@ -54,12 +54,22 @@ font-family: Arial,Helvetica,sans-serif;
 						size="1">
 						<apex:selectoptions value="{!Options}" />
 						<apex:actionsupport event="onchange" action="{!getInfo}"
-							reRender="panel1, panel2, panel3, panel4, panel5"
+							reRender="panel1, panel2, panel3, panel4, panel5,panel6"
 							status="statusId" />
+							
+						<apex:actionStatus id="statusId" layout="block">
+		                     <apex:facet name="start">
+		                         <div
+		                             style="margin-top: 0px; margin-left: 0%; z-index: 2; position: absolute; background: lightgreen;">
+		                             <font color="blue"><img src="/img/loading32.gif"
+		                                 height="20" width="20" /> In Progress...</font>
+		                         </div>
+		                     </apex:facet>
+		                     <apex:facet name="stop"></apex:facet>
+	                 	</apex:actionStatus>
 					</apex:selectList>
 				</apex:pageblockSectionItem>
 			</apex:pageBlockSection>
-			<apex:actionStatus startText="In progress..." id="statusId" />
 
 
 			<apex:outputPanel id="panel1">
@@ -256,6 +266,53 @@ font-family: Arial,Helvetica,sans-serif;
 								</table>
 							</apex:outputText>
 				</apex:outputpanel>
+				
+				<apex:outputPanel id="panel6">
+					<apex:outputText rendered="{!isDispOpt5}">
+
+								<table align="center" style="border: 1px solid black;">
+									<tbody>
+									
+									<tr height="20" style="height: 20px; background-color: white;">
+										<td colspan="1" rowspan="1" height="20"
+											style="border:1px solid black; height: 20px; width: 75px; font-size: 11px; color: #002060; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											Name</td>
+										<td colspan="1" rowspan="1" height="20"
+											style="border:1px solid black; height: 20px; width: 75px; font-size: 11px; color: #002060; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											Quantity</td> 
+										<td colspan="1" rowspan="1"
+											style="border:1px solid black; width: 92px; font-size: 11px; color: #002060; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											Purchase Date</td>
+										<td colspan="1" rowspan="1"
+											style="border:1px solid black; width: 76px; font-size: 11px; color: #002060; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											Status</td>
+									</tr>
+									<apex:repeat var="ast" value="{!assests}">
+									<tr height="20" style="height: 20px;">
+										<td colspan="1" rowspan="1" height="20"
+											style="border:1px solid black; height: 20px; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											{!ast.name}</td>
+										<td colspan="1" rowspan="1" height="20"
+											style="border:1px solid black; height: 20px; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+												<apex:outputText value="{!ast.quantity}">
+												</apex:outputText> </td>
+										
+										<td colspan="1" rowspan="1"
+											style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											<apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+													<apex:param value="{!ast.PurchaseDate}" />
+												</apex:outputText></td>
+										<td colspan="1" rowspan="1"
+											style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											{!ast.Status}</td>
+										
+									</tr>
+									</apex:repeat>
+								</tbody>
+								</table>
+							</apex:outputText>
+				</apex:outputpanel>
+				
 				<apex:outputPanel id="panel5" rendered="false">
 					
 					<apex:pageBlockSection columns="1"  title="Resolution"

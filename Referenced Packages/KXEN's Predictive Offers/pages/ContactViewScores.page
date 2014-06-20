@@ -1,0 +1,145 @@
+<apex:page controller="Offers.ShowOffersController" showHeader="false" sidebar="false" action="{!initOffers}">
+    <apex:includeScript value="/support/console/25.0/integration.js"/>
+    <apex:includeScript value="/soap/ajax/15.0/connection.js"/>
+    <apex:includeScript value="/soap/ajax/15.0/apex.js"/>
+    <apex:includeScript value="{!$Resource.Offers__NbaJs}"/>
+    
+    <style type="text/css">
+        .bar {
+            background-color:#FFCC00;
+            text-align: center;
+            margin-left: 40%;
+            margin-right: 40%;
+            border:1px solid;
+            border-color:#56458C;
+            border-bottom-left-radius:6px;
+            border-bottom-right-radius:6px;
+            border-top-right-radius:6px;
+            border-top-left-radius:6px;
+        }
+    </style>
+
+    <script type="text/javascript">
+       function setTabTitle() {
+           sforce.console.setTabTitle('View All Offers');
+       }       
+      
+       var previousOnload = window.onload;        
+       window.onload = function() { 
+            if (previousOnload) { 
+                previousOnload();
+            }                
+            setTimeout('setTabTitle()', '500'); 
+       }
+    </script>
+
+    <script type="text/javascript">
+
+        var baseUrl = '/apex/VariableChart?model=';
+        
+        function openChart(offerId, offerName){
+            var isInConsole = getParameterByName("inConsole");
+            var namespace = getOffersNameSpace();
+            baseUrl = '/apex/' + namespace + 'VariableChart?model='+offerId+ '&modelName='+offerName;
+            if(isInConsole == 'true'){
+                sforce.console.getFocusedPrimaryTabId(refreshPrimaryTab);
+            } else {
+                window.open(baseUrl);
+            }
+        }
+
+        var refreshPrimaryTab = function refreshPrimaryTab (result) {
+            sforce.console.openSubtab(result.id, baseUrl, true, '', null);
+        }
+
+        function getParameterByName(name)
+        {
+            name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+            var regexS = "[\\?&]" + name + "=([^&#]*)";
+            var regex = new RegExp(regexS);
+            var results = regex.exec(window.location.search);
+            if(results == null)
+            {
+                return "";
+            }
+            else
+            {
+                return decodeURIComponent(results[1].replace(/\+/g, " "));
+            }
+        }
+
+        function openExplainChart(offerId, userId, proba){
+            var isInConsole = getParameterByName("inConsole");
+            var namespace = getOffersNameSpace();
+            baseUrl = '/apex/'+ namespace + 'ExplainChart?model='+offerId+ '&user='+userId+'&proba='+proba ;
+            if(isInConsole == 'true'){
+                sforce.console.getFocusedPrimaryTabId(refreshPrimaryTabFoeExplain);
+            } else {
+                window.open(baseUrl);
+            }
+        }
+
+        var refreshPrimaryTabFoeExplain = function refreshPrimaryTabFoeExplain (result) {
+            sforce.console.openSubtab(result.id, baseUrl, true, '', null);
+        }
+    </script>
+    
+    <apex:variable var="firstName" value="{!IF(isContact, contact.FirstName, lead.FirstName)}"/>
+    <apex:variable var="lastName" value="{!IF(isContact, contact.LastName, lead.LastName)}"/>
+
+    <apex:sectionHeader title="Predictive Offers" subtitle="Offer scores for {!firstName} {!lastName}"/>
+    <apex:form rendered="{!!isRegularMode}">
+        <div class="bar">
+            <apex:outputText style="font-weight:bold" value="Mode: "/>
+            <apex:outputText value="{!mode}"/>
+            <apex:outputLink onclick="openDoc('https://docs.google.com/document/d/1VkUwkzOJiOmahEXAwIwd_TM8dFHzSwy8r-Q1s6O7zUU/edit?usp=sharing')" value="" id="LearningModeLink" rendered="{!isLearningMode}" style="font-style:italic">(Explain This)</apex:outputLink>
+            <apex:outputLink onclick="openDoc('https://docs.google.com/document/d/1VNNXLKT8rMtYb1GohVoumyQjUtAyfL9gIvaRPrinl50/edit?usp=sharing')" value="" id="ImprovementModeLink" rendered="{!isImprovementMode}" style="font-style:italic">(Explain This)</apex:outputLink>
+            <br/>
+        </div>
+    </apex:form>
+    <apex:outputText style="font-weight:bold" value="Selected Offer: "/><apex:outputText value="{!selectedOfferName}"/>
+
+    <apex:form >
+        <apex:pageBlock title="Offers With Predictions" mode="edit" tabStyle="About__tab">
+            <apex:pageBlockTable value="{!modeledOffers}" var="offer" id="table1" rowClasses="odd,even" styleClass="tableClass" >
+                <apex:column >
+                    <apex:facet name="header">Rank</apex:facet>
+                    <apex:outputText value="{!offer.rank}"/>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Offer</apex:facet>
+                    <apex:outputLink value="javascript:openChart('{!offer.id}', '{!offer.name}')" rendered="{!isKxenImpl}">{!offer.name}</apex:outputLink>
+                    <apex:outputText value="{!offer.name}" rendered="{!!isKxenImpl}"/>
+                </apex:column>
+                <apex:column rendered="{!!isImprovementMode}" style="{!IF(!offer.isValid,'color:red;font-weight:bold','')}">
+                    <apex:facet name="header">Probability</apex:facet>
+                    <apex:outputText value="{!IF(offer.isValid, offer.probability, 'N/A ')}%" />
+                </apex:column>
+                <apex:column rendered="{!isImprovementMode}">
+                    <apex:facet name="header">Probability</apex:facet>
+                    <apex:outputText value="Random"/>
+                </apex:column>
+                <apex:column rendered="{!AND(isKxenImpl, !isImprovementMode)}">
+                    <apex:facet name="header"></apex:facet>
+                    <apex:outputLink value="javascript:openExplainChart('{!offer.id}', '{!currentUserId}', '{!offer.probability}')" >{!IF(offer.isValid, 'Why?','')}</apex:outputLink>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Exclusion Reasons</apex:facet>
+                    <apex:outputText value="{!offer.exclusionReason}" escape="false"/>
+                </apex:column>
+        </apex:pageBlockTable>
+        </apex:pageBlock>
+        <apex:pageBlock title="Offers That Are Not Yet Predictable" mode="edit" tabStyle="About__tab" rendered="{!isKxenImpl}">
+        <apex:pageBlockTable value="{!unmodeledOffers}" var="offer" id="table2" rowClasses="odd,even" styleClass="tableClass">
+                <apex:column >
+                    <apex:facet name="header">Offer</apex:facet>
+                    <apex:outputText value="{!offer.name}"/>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Exclusion Reasons</apex:facet>
+                    <apex:outputText value="{!offer.exclusionReason}" escape="false"/>
+                </apex:column>
+        </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

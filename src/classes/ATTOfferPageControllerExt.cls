@@ -17,9 +17,20 @@ public class ATTOfferPageControllerExt {
 	public ATTOfferPageControllerExt(ApexPages.StandardController controller) {
 		renderOffers = false;
 		agentScripts = new List<AgentScript>();
-		agentScripts.add(new AgentScript('Your bill is $100 more than average 250, shall I suggest some plan suitable for your usage?','boolean'));
-		agentScripts.add(new AgentScript('Currently having voice plan, ..?','boolean'));
-		agentScripts.add(new AgentScript('Customer using basic phone,..?','boolean'));
+		agentScripts.add(new AgentScript('1.Statement: Can I use your personal information during our conversation in making you the best offer from AT&T','boolean'));
+		agentScripts.add(new AgentScript('2.What can I help you with today','boolean'));
+		agentScripts.add(new AgentScript('3.	If don’t own Uverse TV then who is your provider?','boolean'));
+		agentScripts.add(new AgentScript('4.	If don’t own Uverse internet then who is your provider?','boolean'));
+		agentScripts.add(new AgentScript('5.	If don’t use cellular service then who is your provider?','boolean'));
+		agentScripts.add(new AgentScript('6.	If don’t use AT&T long Distance, the who is your provider?','boolean'));
+		agentScripts.add(new AgentScript('7.	If yes to any of 3,4,5 or 6, then goto next best offer','boolean'));
+
+		
+		
+
+
+
+		
 		
 		
 		boolMasterCheckQuestions=false;
@@ -35,7 +46,6 @@ public class ATTOfferPageControllerExt {
 		
 		dynamicQuestionWrappers = new List<QuestionWrapper>();
 		List<DDQ__c> dynamicQuestions = [SELECT id,name,Que_Description__c, (select DDQ_recs__c,Offer_Description_Beta__c,Offered_Prod_id__c,Offers_Master__c,Offers_Product_Name_beta__c from Offer_DDQs__r) from DDQ__c where products__c in :assetsProductIds];
-		System.debug('+++++ : dynamicQuestions : ' + dynamicQuestions);
 		for(DDQ__c ddq: dynamicQuestions){
 			if(ddq.Offer_DDQs__r.size()>0)
 				dynamicQuestionWrappers.add(new QuestionWrapper(ddq));
@@ -45,7 +55,7 @@ public class ATTOfferPageControllerExt {
 		newOfferWrappers = new List<OfferWrapper>();
 		system.debug('----'+dynamicQuestions);
 		
-		//viewOffers();
+		viewOffers();
 	}
 	
 	public Pagereference viewOffers(){
@@ -56,7 +66,7 @@ public class ATTOfferPageControllerExt {
 		set<id> offerIds = new set<id>();
 		for(QuestionWrapper qWrapper: dynamicQuestionWrappers){
 			system.debug('==============qWrapper.bCheck==='+qWrapper.bCheck+'  '+qWrapper.dynamicQuestion.Offer_DDQs__r);
-			//qWrapper.bCheck = true;
+			qWrapper.bCheck = true;
 			
 			if(qWrapper.bCheck){
 				boolMasterCheckQuestions = true;
@@ -66,9 +76,9 @@ public class ATTOfferPageControllerExt {
 			}
 		}
 		
-		if(offerIds.size() >0 ){
-			newOffers = [select id, popularity__c,is_Cross_Sell__c ,Offer_Price__c,First_Bill__c,name,Offer_Description__c, Feature1__c,Feature2__c,Feature3__c,Feature4__c,Feature5__c,Feature1_Details__c,Feature2_Details__c,Feature3_Details__c,Feature4_Details__c,Feature5_Details__c,(select id,Product_Name_text__c ,Offer_Description__c,product__c from Offer_Line_Items__r) from Offers__c where id in:offerIds order by popularity__c desc];
-		}
+		//if(offerIds.size() >0 ){
+			newOffers = [select id, popularity__c,is_Cross_Sell__c ,Offer_Price__c,First_Bill__c,name,Offer_Description__c, Feature1__c,Feature2__c,Feature3__c,Feature4__c,Feature5__c,Feature1_Details__c,Feature2_Details__c,Feature3_Details__c,Feature4_Details__c,Feature5_Details__c,(select id,Product_Name_text__c ,Offer_Description__c,product__c from Offer_Line_Items__r) from Offers__c /*where id in:offerIds*/ order by popularity__c desc];
+		//}
 		
 		for(Offers__c o: newOffers){
 			newOfferWrappers.add(new OfferWrapper(o));
@@ -159,9 +169,9 @@ public class ATTOfferPageControllerExt {
 	public Pagereference SubmitAgentAcripts(){
 		
 		for(AgentScript agS: agentScripts){
-			if(agS.answer){
+			//if(agS.answer){
 				renderOffers = true;
-			}
+			//}
 		}
 		return null;	
 	}
@@ -188,6 +198,7 @@ public class ATTOfferPageControllerExt {
 		
 		public string question {get;set;}
 		public boolean answer {get;set;}
+		public string answerT {get;set;}
 		public string questiontype {get;set;}
 		
 	}

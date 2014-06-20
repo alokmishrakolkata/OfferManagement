@@ -1,0 +1,14 @@
+<apex:page standardController="Offers__Rule__c" extensions="Offers.RuleRedirectController">
+	<apex:pageMessages />
+	<apex:form >
+		<apex:pageBlock title="Select Rule Type">
+			<apex:pageBlockSection >
+				<apex:inputField value="{!rule.Offers__Type__c}" label="Rule Type "  required="true"/>
+			</apex:pageBlockSection>
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton id="continueButton" action="{!continu}" value="Continue"/>
+				<apex:commandButton id="cancelButton" action="{!cancel}" value="Cancel" immediate="true" />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

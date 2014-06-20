@@ -1,5 +1,6 @@
 public class OutlierPredictionCtrlr{
-
+	
+	/*
     public Outlier_Prediction__c objOLP {get; set;}
     
     public integer dtl {get; set;}
@@ -11,8 +12,52 @@ public class OutlierPredictionCtrlr{
         objOLP = new Outlier_Prediction__c ();
         getDetails();
     }
+    */
+    public Account currentAccount {get;set;}
+    public Asset[] assetsList {get;set;}
+    public string allAssets {get;set;} 
+    public List<Billing_History__c> billingHistorys{get;set;}
+    public integer averageBill {get;set;}
+    public integer lastBillAmount {get;set;}
+    public integer customerLifeCycleValue {get;set;}
+    public boolean isDue{get;set;}
+    public OutlierPredictionCtrlr(ApexPages.StandardController controller) {
+    	lastBillAmount = 0;
+    	customerLifeCycleValue = 0;
+    	averageBill = 0;
+    	isDue = false;
+    	allAssets = '';
+    	currentAccount = (Account)controller.getRecord();
+    	
+    	currentAccount = [select id, Customer_Since__c,Changed_Plan_In__c from Account where id =:controller.getId()];
+    	assetsList = [select Product2.name,name from Asset where accountid = :currentAccount.id];
+    	for(Asset a: assetsList)
+    		allAssets+=','+a.name;
+    		
+    	if(allAssets != null && allAssets.startswith(','))
+    		allAssets = allAssets.substring(1);
+    		
+    	
+    	billingHistorys = [select id,name,Account__c,Bill_Amount__c,Bill_Cycle__c,Due_Date__c,Paid_Date__c from Billing_History__c where account__c = :currentAccount.id order by Due_Date__c desc limit 4];
+    	for(Billing_History__c bh: billingHistorys){
+    		averageBill += Integer.valueof(bh.Bill_Amount__c);
+    	}
+    	
+    	if(billingHistorys.size()>0){
+    		lastBillAmount = Integer.valueof(billingHistorys.get(0).Bill_Amount__c);
+    		if(billingHistorys.get(0).Paid_Date__c == null)
+    			isDue = true;
+    	}
+    	
+    	if(averageBill >0){
+    		averageBill = averageBill/billingHistorys.size();
+    		customerLifeCycleValue = averageBill * 12;
+    	}
+    	
+    }
     
     
+    /*
     public pagereference runDetail(){
         dtl = integer.valueOf(Math.rint((Math.random()*10)/2));
         //getDetails();
@@ -43,4 +88,5 @@ public class OutlierPredictionCtrlr{
         
         
     }
+    */
 }

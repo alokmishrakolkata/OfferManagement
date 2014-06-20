@@ -1,0 +1,8 @@
+<apex:page standardController="Account" extensions="Offers.PersonAccountController" showHeader="false" title="Offers">
+    
+    <apex:pageBlock rendered="{!!isPersonAccount}">
+    	<h1>Only works with Person Accounts</h1>	
+    </apex:pageBlock>
+    
+    <c:ShowOfferConsole contactOrLeadId="{!personContactId}" rendered="{!isPersonAccount}"/>   
+</apex:page>

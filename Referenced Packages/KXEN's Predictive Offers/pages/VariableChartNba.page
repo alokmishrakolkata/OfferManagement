@@ -1,0 +1,28 @@
+<apex:page controller="Offers.VariableChartNbaController" tabStyle="Offers__Offer__c">
+    <apex:includeScript value="{!$Resource.Offers__NbaJs}"/>
+    <apex:pageMessages />
+    <apex:outputPanel rendered="{!!hasError}">
+    <apex:composition template="Offers__VariableChart">
+        <apex:define name="moreInfomation">
+            <table border="0" style="font-size: 15px;margin-left: 40px;">
+                <tr >
+                    <td><apex:outputText value="Predictive Power" style="font-weight: bold;"/></td>
+                    <td><apex:outputText value="{!ki}%" style="margin-left: 20px;"/><apex:outputLink value="" id="explainKi" style="margin-right: 50px;" onclick="openDoc('https://docs.google.com/document/d/1Z9yqRX9_agxRFoRiNXSmeCMBAbwCEjbTAXftzJlcOkc/edit?usp=sharing')">(Explain This)</apex:outputLink></td>
+                    <td><apex:outputText value="Prediction Confidence" style="font-weight: bold;"/></td>
+                    <td><apex:outputText value="{!kr}%" style="margin-left: 20px;"/><apex:outputLink value="" id="explainKr" onclick="openDoc('https://docs.google.com/document/d/1aWtCgVkAtTlF4uotMJLv0MAQp2spPJToWwK5lpVNIsk/edit?usp=sharing')">(Explain This)</apex:outputLink></td>
+                </tr>
+                <tr>
+                    <td><apex:outputText value="Last Rebuild" style="font-weight: bold;"/></td>
+                    <td><apex:outputText value="{!lastBuildDate}" style="margin-left: 20px; margin-right: 50px;"/></td>
+                    <td><apex:outputText value="Total Responses" style="font-weight: bold;"/></td>
+                    <td><apex:outputText value="{!nbResponse}" style="margin-left: 20px;"/></td>
+                </tr>
+                <tr>
+                	<td><apex:outputText value="Number of Variables Considered" style="font-weight: bold;"/></td>
+                    <td><apex:outputText value="{!inputVariableCount}" style="margin-left: 20px;"/></td>
+                </tr>                
+            </table>
+        </apex:define>
+    </apex:composition>
+    </apex:outputPanel>
+</apex:page>

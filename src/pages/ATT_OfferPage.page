@@ -11,7 +11,7 @@
 	border-color: #97999B;
 	color: #333333;
 }
-body .bPageBlock, body .bPageBlock .pbBody, body .bPageBlock .pbBottomButtons{
+body .bPageBlock, body .bPageBlock .pbBody, body .bPageBlock .pbBottomButtons{ 
 	background-color: #EDEDED;
 }
 
@@ -125,7 +125,7 @@ border-top-right-radius: 5px;
 					</apex:column>
 					<apex:column >
 						<apex:inputCheckbox value="{!script.answer}" rendered="{!script.questiontype=='boolean'}"></apex:inputCheckbox>
-						<apex:inputText value="{!script.answer}" rendered="{!NOT(script.questiontype=='boolean')}"></apex:inputText>
+						<apex:inputText value="{!script.answerT}" rendered="{!NOT(script.questiontype=='boolean')}"></apex:inputText>
 						
 					</apex:column>
 				</apex:PageBlockTable>
@@ -145,7 +145,7 @@ border-top-right-radius: 5px;
                  </apex:actionStatus>
 			</apex:pageBlockButtons>
 		</apex:pageBlock>
-		{!renderOffers}
+		
 		
         <apex:pageBlock id="outerPB" rendered="{!renderOffers}">
 

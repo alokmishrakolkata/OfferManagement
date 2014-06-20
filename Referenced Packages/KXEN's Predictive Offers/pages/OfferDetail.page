@@ -1,0 +1,74 @@
+<apex:page standardController="Offers__Offer__c" extensions="Offers.Offer">
+  <apex:stylesheet value="{!$Resource.Offers__offer_detail_css}"/>
+  <apex:includeScript value="{!$Resource.Offers__NbaJs}"/>
+  <apex:includeScript value="{!$Resource.Offers__jquery}"/>
+  
+  <script type="text/javascript">
+  function openChart(offerId, offerName){
+        var namespace = getOffersNameSpace();
+        baseUrl = '/apex/'+ namespace +'VariableChartNba?model='+offerId+ '&modelName='+offerName ;
+        window.open(baseUrl);
+    }
+
+  </script>
+  
+    <style type="text/css">
+        .actionColumn { font-size: 0px; }
+        .actionColumn a { font-size: 12px; }
+        .nodisplay { display:none; }
+    </style>
+
+  <apex:sectionHeader title="Offer" subtitle="{!offer.Name}" />
+  <apex:form >
+  <apex:pageBlock >
+  
+    <apex:pageBlockButtons >
+      <apex:commandButton id="editButton" action="{!edit}" value="Edit" rendered="{!!hasChanged}"/>
+      <apex:commandButton id="viewModelButton" action="{!cancel}" value="View Model" rendered="{!AND(hasModel, !hasChanged)}" onclick="javascript:openChart('{!JSENCODE(offer.id)}', '{!JSENCODE(offer.name)}')"/>
+      <apex:commandButton id="saveInlineButton" action="{!save}" value="Save" style="display:none;" rerender=""/>
+      <apex:commandButton id="cancelInlineButton" action="{!cancel}" value="Cancel" style="display:none;"/>
+      <apex:commandButton id="saveUploadButton" action="{!save}" value="Save" rerender="" rendered="{!hasChanged}"/>
+      <apex:commandButton id="cancelUploadButton" action="{!cancel}" value="Cancel" rendered="{!hasChanged}"/>
+      <apex:commandButton id="deleteButton" action="{!delete}" value="Delete" rendered="{!!hasChanged}"/>
+    </apex:pageBlockButtons>
+    
+    <apex:pageBlockSection title="Offer Settings">
+      <apex:inlineEditSupport event="ondblclick" showOnEdit="saveInlineButton,cancelInlineButton" hideOnEdit="editButton,viewModelButton,deleteButton,saveUploadButton,cancelUploadButton">
+      <apex:outputField value="{!Offer.Name}"/>
+      <apex:outputText value=""/>
+      <apex:outputField value="{!Offer.Offers__ActivationDate__c}"/>
+      <apex:outputText value="{!Offer.Offers__LastModelingDate__c}"/>
+      <apex:outputField value="{!Offer.Offers__DeactivationDate__c}"/>
+      <apex:outputText label="Response Count" value="{!Offer.Offers__NbResponses__c}"/>
+      <apex:outputText label="Predictive Power" value="{0, number, ###.#%}">
+        <apex:param value="{!Offer.Offers__KI__c}"/>
+      </apex:outputText>
+      <apex:outputText value=""/>
+      <!-- <apex:outputField value="{!Offer.StarterOffer.Name}"/> -->
+      <apex:outputText label="Predictive Confidence" value="{0, number, ###.#%}">
+        <apex:param value="{!Offer.Offers__KR__c}"/>
+      </apex:outputText>
+      <apex:outputField value="{!Offer.Offers__Script__c}"/>
+      <apex:outputText value=""/>
+      <apex:outputText label="Created By" value="{!Offer.CreatedBy.Name}, {!Offer.CreatedDate}"/>
+      <apex:outputText label="Last Modified By" value="{!Offer.LastModifiedBy.Name}"/>
+      </apex:inlineEditSupport>
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Creative" columns="1">
+      <c:OfferDraggableImage c_ctl="{!this}" c_tag="banner"/>
+      <c:OfferDraggableImage c_ctl="{!this}" c_tag="console"/>
+    </apex:pageBlockSection>
+
+  </apex:pageBlock>
+  </apex:form>
+  <apex:relatedList list="Offer_Rule_Associations__r" id="rulesList"/>
+  <apex:relatedList list="OfferSetOfferAssociations__r"/>
+
+  <script type="text/javascript">
+        $j = jQuery.noConflict();
+        $j('div[id*=rulesList]').find('td.actionColumn :first-child').attr("class", "nodisplay");
+        $j(".actionLink").text("Remove");
+  </script>
+
+</apex:page>

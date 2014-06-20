@@ -1,0 +1,45 @@
+<apex:page >
+<style>
+			.progress1 {
+			 width: 100%;   
+			 border: 1px solid #008DD3;
+			 position: relative;
+			 padding: 1px;
+			}
+			
+			.percent1 {
+			 position: absolute;   
+			 left: 50%;
+			}
+			
+			.bar1 {
+			 height: 14px;
+			 //background-color: #008DD3;
+			 background-color: green;
+			 width: 30%;
+			}
+		
+		
+		</style>
+
+		<apex:pageBlock id="pb0">
+            <apex:pageBlockSection title="Welcome {!$User.Username}" columns="1" >
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Order Target"></apex:outputLabel>
+                    <apex:outputText value="$10000" id="theFirst"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Achievement"></apex:outputLabel>
+                    <apex:outputText value="$3000" id="theFirst"/>
+                </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                <div id="progress1" class="progress1">
+                    <span id="percent1" class="percent1">30%</span>
+               		<div id="bar1" class="bar1"></div>
+                </div>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+    </apex:pageBlock>
+</apex:page>

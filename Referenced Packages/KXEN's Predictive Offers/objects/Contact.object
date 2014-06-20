@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <webLinks>
+        <fullName>View_All_Offers</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>View All Offers</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/apex.js&quot;)}
+
+var hasNamespace = false;
+try
+  {
+  var pageUrl = sforce.apex.execute(&quot;ShowOffersController&quot;, &quot;getPageUrl&quot;, {});
+  }
+catch(err)
+  {
+  hasNamespace = true;
+  }
+
+if (typeof(srcUp) == &apos;function&apos;) {
+    if (hasNamespace == true) {
+      srcUp(&apos;/apex/Offers__ContactViewScores?id={!Contact.Id}&amp;inConsole=true&apos;);
+  } else {
+      srcUp(&apos;/apex/ContactViewScores?id={!Contact.Id}&amp;inConsole=true&apos;);
+  }
+    
+} else {    
+   if (hasNamespace == true) {
+      window.open(&apos;/apex/Offers__ContactViewScores?id={!Contact.Id}&amp;inConsole=false&apos;);
+  } else {
+      window.open(&apos;/apex/ContactViewScores?id={!Contact.Id}&amp;inConsole=false&apos;);
+  }  
+   //window.open(&apos;https://offers.&apos;+getDomain()+&apos;.visual.force.com/apex/ContactViewScores?id={!Contact.Id}&apos;);
+}</url>
+    </webLinks>
+</CustomObject>

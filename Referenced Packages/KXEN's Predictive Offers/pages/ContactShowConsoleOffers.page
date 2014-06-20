@@ -1,0 +1,3 @@
+<apex:page standardController="Contact" showHeader="false" title="Offers">
+        <c:ShowOfferConsole contactOrLeadId="{!Contact.Id}"/>
+</apex:page>

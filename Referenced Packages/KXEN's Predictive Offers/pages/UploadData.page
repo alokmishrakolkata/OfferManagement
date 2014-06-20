@@ -1,0 +1,29 @@
+<apex:page controller="Offers.UploadController"> 
+    <apex:form >
+        <apex:pageBlock title="Data for Demo">
+            <apex:commandButton action="{!uploadData}" value="UploadData" />
+            <apex:commandButton action="{!deleteData}" value="DeleteData" />
+        </apex:pageBlock>
+        <apex:pageBlock title="Fuctionnality Test">
+            <apex:commandButton action="{!testWS}" value="test WS" />
+            <apex:commandButton action="{!testOfferSchedule}" value="test offer schedule" />
+        </apex:pageBlock>
+        <apex:pageBlock title="Submit Job Test">
+            <apex:selectList label="Offers" value="{!offerId}" size="1">
+                <apex:selectOptions value="{!offers}"/>
+            </apex:selectList>
+            <apex:commandButton action="{!createJob}" value="Submit a job" reRender="out" status="status"/>
+            <apex:commandButton action="{!futureCreateJob}" value="Submit a future job" reRender="out" status="status"/>
+        </apex:pageBlock>
+    </apex:form>
+    <apex:outputPanel id="out">
+        <apex:actionstatus id="status" startText="creating...">
+            <apex:facet name="stop">
+                <apex:outputPanel >
+                    <p>A job is created for: </p>
+                    <apex:dataList value="{!offerId}" var="c">{!c}</apex:dataList>
+                </apex:outputPanel>
+            </apex:facet>
+        </apex:actionstatus>
+    </apex:outputPanel>
+</apex:page>

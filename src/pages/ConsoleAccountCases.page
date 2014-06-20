@@ -1,0 +1,11 @@
+<apex:page standardController="Account">
+<script>
+body .bRelatedList .bPageBlock, body .listRelatedObject .bPageBlock, body.lookupTab .listRelatedObject .bPageBlock, body.popupTab .listRelatedObject .bPageBlock {
+border-top: 4px solid #236fbd;
+}
+</script>
+    <apex:relatedList list="Cases">
+        <apex:facet name="header">Cases</apex:facet>
+    </apex:relatedList>
+
+</apex:page>

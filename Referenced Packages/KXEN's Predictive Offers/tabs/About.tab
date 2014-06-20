@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <icon>KXEN_Documents/KXEN_Logo_X_Transparent_32x32.png</icon>
+    <label>About Predictive Offers</label>
+    <mobileReady>false</mobileReady>
+    <motif>Custom283: TV Widescreen</motif>
+    <page>About</page>
+</CustomTab>

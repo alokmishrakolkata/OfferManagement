@@ -1,0 +1,250 @@
+<apex:page tabStyle="Lead" controller="Offers.VariableChartController" showHeader="false" sidebar="false">
+    <apex:includeScript value="{!$Resource.Offers__jquery}"/>
+    <!-- Google API inclusion -->
+    <apex:includeScript id="a" value="https://www.google.com/jsapi" />    
+    <apex:includeScript value="/support/console/25.0/integration.js"/>
+    
+    <script type="text/javascript">  
+       
+       function setTabTitle() {
+           sforce.console.setTabTitle('{!JSENCODE(pageTitle)}');
+       }  
+
+       var previousOnload = window.onload;
+       window.onload = function() { 
+            if (previousOnload) { 
+                previousOnload();
+            }                
+            setTimeout('setTabTitle()', '500'); 
+       }
+
+		function getNameSpace(){
+			var namespace = '';
+			var url = window.location.href;
+			var basicUrl = url.split('/')[2];
+			if (basicUrl.indexOf('offers') > -1){
+				namespace = 'Offers__';
+			} else if (basicUrl.indexOf('kxenleadscore') > -1) {
+				namespace = 'KXENLeadScore__';
+			} else if (basicUrl.indexOf('retention') > -1) {
+				namespace = 'Retention__';
+			}
+			return namespace;
+			
+		}
+
+    </script>
+     
+    <apex:sectionHeader title="{!pageTitle}" subtitle="Contributing Variables"/>
+    
+    <apex:insert name="moreInfomation"/><br/>
+
+    <!-- Google Charts will be drawn in this DIV -->
+    <div id="variableChart"/>
+    <div id="drillIn" style="display: none;">
+        <center>
+            <input type="button" value="< Go Back To All Variables" onclick="backToMain()" style="color:black;background-color:white"/>
+        </center>
+        <div id="binChart"/>
+    </div>
+     
+    <script type="text/javascript">
+		var varMap = {};
+		<apex:repeat value="{!varMap}" var="key">
+			varMap['{!HTMLENCODE(key)}'] = '{!HTMLENCODE(varMap[key])}';
+		</apex:repeat>
+        var currentVar = '';
+
+	    function getModelName()
+        {
+           return "{!JSENCODE(currentModelName)}"; 
+        }
+
+        // Load the Visualization API and the piechart package.
+        google.load('visualization', '1.0', {'packages':['corechart']});
+        
+        var visualization = null;
+        var variableData = null;
+       
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.setOnLoadCallback(initCharts);
+        
+        function createCustomHTMLContent(varName,contribution) {
+			var nameMapped = varMap[varName];
+        	var splitedName = nameMapped.split(':');
+			return '<text style="font-style:italic">'+ splitedName[0]+ '&nbsp&nbsp'+'</text>'+splitedName[1]+'<br />Contribution: <b>'+contribution+'</b>';
+		}
+    
+        function initCharts() {
+        //A Visualforce Javascript remoting call...
+          Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.VariableChartController.loadVariablesForModel}', 
+                getModelName(),
+                function(result, event){  
+                     // load Column chart
+                     visualization = new google.visualization.BarChart(document.getElementById('variableChart'));
+                     // Prepare table model for chart with columns
+                     variableData = new google.visualization.DataTable();
+                     variableData.addColumn('string', 'Variable');
+                     variableData.addColumn('number', 'Contribution');
+                     variableData.addColumn({'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+                     // add rows from the remoting results
+                     for(var i =0; i<result.length;i++){
+                        var r = result[i];
+                        variableData.addRow([r.Name, Math.round(r[getNameSpace()+'Contribution__c']*1000)/1000, createCustomHTMLContent(r.Name, Math.round(r[getNameSpace()+'Contribution__c']*1000)/1000)]);
+                      }
+                    // all done, lets draw the chart with some options to make it look nice.
+                    visualization.draw(variableData, 
+                                        {legend : {position: 'none'},
+                                        width:window.innerWidth-50,
+                                        height:400,
+                                        colors: ['#008ED6'],
+                                        chartArea: { left: 250, top: 20, width:"60%",height:"90%" },
+                                        tooltip:{textStyle:{fontSize: 12}, isHtml: true},
+                                        vAxis:{textStyle:{fontSize: 12}},
+                                        hAxis:{textStyle:{fontSize: 12},
+                                        showTextEvery:1,
+                                        slantedText:false}});
+
+                    google.visualization.events.addListener(visualization, 'select', selectHandler);
+
+                    	$j("text").each(function(i,el) {
+                    	if (el.textContent.trim() in varMap) {
+								if (navigator.userAgent.indexOf("MSIE")> -1){//for IE
+									var elmapped = varMap[el.textContent.trim()];
+									el.textContent = elmapped.replace(':', '  ');
+								}else{
+									var g = el.parentNode;
+									var x = el.getAttribute('x');
+									var y = el.getAttribute('y');
+
+									// A "ForeignObject" tag is how you can inject HTML into an SVG document.
+									var fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+									fo.setAttribute('x', x-200);
+									fo.setAttribute('y', y-10);
+									fo.setAttribute('height', 50);
+									fo.setAttribute('width', 250);
+
+									var elmapped = varMap[el.textContent.trim()];
+
+									var body = document.createElementNS("http://www.w3.org/1999/xhtml", "BODY");
+									var t1 = document.createElement("Text");
+									t1.setAttribute("style", "font-size:12px;font-style:italic;");
+									t1.innerHTML = elmapped.split(':')[0] + '&nbsp&nbsp';
+
+									body.appendChild(t1);
+									var t2 = document.createElement("Text");
+									t2.setAttribute("style", "font-size:12px;");
+									t2.innerHTML = elmapped.split(':')[1];
+
+									body.appendChild(t2);
+									fo.appendChild(body);
+
+									// Remove the original SVG text and replace it with the HTML.
+									g.removeChild(el);
+									g.appendChild(fo);
+								}
+						}
+					});
+                    
+                }, {escape:true});
+         } 
+
+         function showVariableCategories(varName)
+         {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.VariableChartController.getBinsForVariable}',
+                getModelName(),
+                varName,
+                function(result, event){
+                     // load Column chart
+                     var binVisualization = new google.visualization.BarChart(document.getElementById('binChart'));
+                     // Prepare table model for chart with columns
+                     var binData = new google.visualization.DataTable();
+                     binData.addColumn('string', 'Category');
+                     binData.addColumn('number', 'Contribution');
+                     // add rows from the remoting results
+                     for(var i =0; i<result.length;i++){
+                        var r = result[i];
+                        var name = r.Name;
+                        name = name.replace('{','');
+                        name = name.replace('}','');
+                        name = name.replace(/Kx/g,'');
+                        //Have to put the {1} in there otherwise Visualforce converts the string to a #38 so it doesn't work.
+                        name = name.replace(/&{1}amp;/g,'&');
+                        name = name.replace(/;/g,',');
+                        binData.addRow([name, Math.round(r[getNameSpace()+'Contribution__c']*1000)/1000]);
+                      }
+                    // all done, lets draw the chart with some options to make it look nice.
+                    binVisualization.draw(binData, 
+                                        {legend : {position: 'none'}, 
+                                        width:window.innerWidth-350,
+                                        height:400,
+                                        colors: ['#008ED6'],
+                                        chartArea: { top: 20,width:"60%",height:"90%" },
+                                        tooltip:{textStyle:{fontSize: 12}},
+                                        vAxis:{textStyle:{fontSize: 12}},
+                                        hAxis:{textStyle:{fontSize: 12},                                     
+                                        showTextEvery:1,
+                                        slantedText:false}});                                     
+                    modifyTitle(varMap[varName]);
+                }, {escape:true});
+         }
+
+         function resize() {            
+            if(currentVar=='') {
+                initCharts();
+            } else {
+                showVariableCategories(currentVar);
+            }
+         }
+
+        function modifyTitle(newTitle) {
+			var elem = $j('h2.pageDescription');
+            if (newTitle.indexOf(':') > -1) {
+            	var splitedTitle = newTitle.split(':');
+            	elem.text('Variable: ');
+            	elem.append($j('<i/>').text(splitedTitle[0]));
+            	elem.append("&nbsp;").append("&nbsp;");
+            	elem.append(splitedTitle[1]);
+            } else {
+            	elem.text(newTitle);
+            }
+
+        }
+
+        function selectHandler(e)
+        {
+            var selection = visualization.getSelection();
+            if (selection.length>0) 
+            {
+                var varName = variableData.getFormattedValue(selection[0].row, 0);
+                document.getElementById('variableChart').style.display = 'none';
+                showVariableCategories(varName);
+                document.getElementById('drillIn').style.display = '';
+                currentVar = varName;
+            }
+            window.location = '#variable';
+        }
+
+        function backToMain()
+        {
+            document.getElementById('drillIn').style.display = 'none';
+            document.getElementById('variableChart').style.display = '';
+            modifyTitle('Contributing Variables');        
+            currentVar = '';
+        }
+        
+        $j = jQuery.noConflict();
+        $j(window).resize(function() {
+            resize();
+        });
+
+        $j(window).bind('hashchange', function() {
+            if (window.location.hash == '') {
+                backToMain();
+            }
+        });
+
+    </script>
+</apex:page>

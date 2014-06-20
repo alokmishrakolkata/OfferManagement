@@ -1,0 +1,108 @@
+<apex:component controller="Offers.DuelingListBoxController">
+
+	<style type="text/css"> 
+        .ColCss {
+            text-align:center;
+            vertical-align: middle !important;
+        }
+        .imageCss {
+        	padding-top: 0.1em;
+        	padding-bottom: 0.1em;
+        }
+	</style>
+    <apex:attribute name="leftOptions" 
+        description="Options to choose from" 
+        type="SelectOption[]" 
+        required="true" 
+        assignTo="{!unselectedOptions}" />
+    <apex:attribute name="rightOptions" 
+        description="Options chosen" 
+        type="SelectOption[]" 
+        required="true" 
+        assignTo="{!selectedOptions}" />
+    <apex:attribute name="leftLabel" 
+        description="Left Label"
+        type="String" 
+        required="true" />
+    <apex:attribute name="rightLabel" 
+        description="Right Label"
+        type="String" 
+        required="true" />
+    <apex:attribute name="shouldOrder" 
+        description="Display up/down/top/bottom button"
+        type="Boolean" 
+        required="true" />
+    <apex:attribute name="shouldSelect" 
+        description="Display the left select box"
+        type="Boolean" 
+        required="true" />
+    <apex:attribute name="size" 
+        description="Size of listboxe"
+        type="Integer" 
+        required="true" />
+    <apex:attribute name="width" 
+        description="Width of listboxe"
+        type="String" 
+        required="true" />
+
+    <apex:actionRegion >
+
+        <apex:panelGrid columns="5" id="theGrid" columnClasses="ColCss">
+            <apex:panelGroup rendered="{!shouldSelect}">
+                <br/>
+                <apex:outputText value="{!leftLabel}" style="font-weight:bold;"/><br/>
+                <apex:selectList value="{!leftSelected}" multiselect="true" size="{!size}" style="width:{!width}px;">
+                    <apex:selectOptions value="{!leftOptions}"/>
+                </apex:selectList>
+            </apex:panelGroup>
+            <apex:panelGroup rendered="{!shouldSelect}">
+                <apex:outputText value="Add"/>
+                <div class="imageCss">
+	                <apex:image value="/s.gif" styleClass="rightArrowIcon">
+	                    <apex:actionSupport event="onclick" action="{!selectclick}" reRender="theGrid"/>
+	                </apex:image>
+                </div>
+                <div class="imageCss">
+	                <apex:image value="/s.gif" styleClass="leftArrowIcon">
+	                    <apex:actionSupport event="onclick" action="{!unselectclick}" reRender="theGrid"/>
+	                </apex:image>
+                </div>
+                <apex:outputText value="Remove" />
+            </apex:panelGroup>
+            <apex:panelGroup >
+                <br/>
+                <apex:outputText value="{!rightLabel}" style="font-weight:bold"/><br/>
+                <apex:selectList value="{!rightSelected}" multiselect="true" size="{!size}" style="width:{!width}px;">
+                    <apex:selectOptions value="{!rightOptions}"/>
+                </apex:selectList>
+            </apex:panelGroup>
+            <apex:panelGroup rendered="{!shouldOrder}">
+                <apex:outputText value="Top" /><br/>
+                <div class="imageCss">
+	                <apex:image value="/s.gif" styleClass="doubleArrowUp" >
+	                    <apex:actionSupport event="onclick" action="{!topclick}" reRender="theGrid"/>
+	                </apex:image>
+                </div>
+                <apex:outputText value="Up" />
+                <div class="imageCss">
+	                <apex:image value="/s.gif" styleClass="upArrowIcon">
+	                    <apex:actionSupport event="onclick" action="{!upclick}" reRender="theGrid"/>
+	                </apex:image>
+	            </div>
+                <div class="imageCss">
+	                <apex:image value="/s.gif" styleClass="downArrowIcon">
+	                    <apex:actionSupport event="onclick" action="{!downclick}" reRender="theGrid"/>
+	                </apex:image>
+                </div>
+                <apex:outputText value="Down" />
+                <div class="imageCss">
+	                <apex:image value="/s.gif" styleClass="doubleArrowDwn" >
+	                    <apex:actionSupport event="onclick" action="{!bottomclick}" reRender="theGrid"/>
+	                </apex:image>
+                </div>
+                <apex:outputText value="Bottom" />
+            </apex:panelGroup>
+        </apex:panelGrid>
+   </apex:actionRegion>
+
+</apex:component>
