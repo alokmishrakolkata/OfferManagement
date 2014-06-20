@@ -1,0 +1,38 @@
+<apex:page controller="OutlierPredictionCtrlr" >
+<style>
+.pbHeader{
+background: #008DD3;
+}
+.mainTitle{
+color: white;
+}
+.detailList1{
+    background: white; 
+    font-weight: bold;
+}
+
+
+</style>
+  <apex:pageblock rendered="true" title="Disposition">
+      <apex:pageblockSection columns="1">
+         
+          <apex:pageBlockSectionItem >
+          <table>
+<tr><td >Customer Since</td><td >2001</td></tr>
+<tr><td>Changed plan in</td><td>2-2014</td></tr>
+<tr><td >Plan/Contract:</td><td>UVERSE (BASE Pack)</td></tr>
+<tr ><td >Internet</td><td>(1MBPS ULink)</td></tr>
+<tr ><td >Home Phone</td><td>(VoIP)</td></tr>
+<tr ><td >Average Monthly Bill:</td><td>$50</td></tr>
+<tr ><td>Bill Due:</td><td>Not Due</td></tr>
+<tr ><td >Credit:</td><td>Very Good (pays on time)</td></tr>
+<tr ><td >Customer Life Cycle Value :</td><td>$5000</td></tr>
+<tr ><td >Customer Inventory :</td><td>TV sets/boxes</td></tr>
+<tr ><td >Pertinent Customer Usage trend/pattern :</td><td>mostly stream videos</td></tr>
+
+</table>
+          </apex:pageBlockSectionItem>
+      
+      </apex:pageblockSection>
+  </apex:pageblock>
+</apex:page>

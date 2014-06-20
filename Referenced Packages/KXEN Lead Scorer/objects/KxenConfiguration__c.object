@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <description>KXEN Cloud Controller configuration</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Controller__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Controller</label>
+        <length>254</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LastModelingTime__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Time when the last modeling job was triggered</description>
+        <externalId>false</externalId>
+        <label>LastModelingTime</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>NewConvertedLeadsCount__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Count the number of leads converted since last modeling</description>
+        <externalId>false</externalId>
+        <label>NewConvertedLeadsCount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NewLeadsCount__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Count the number of new leads since last modeling</description>
+        <externalId>false</externalId>
+        <label>NewLeadsCount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RESTSecretKey__c</fullName>
+        <deprecated>false</deprecated>
+        <description>DEPRECATED</description>
+        <externalId>false</externalId>
+        <label>RESTSecretKey</label>
+        <length>254</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Activation status</description>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Kxen Controller Configuration</label>
+</CustomObject>

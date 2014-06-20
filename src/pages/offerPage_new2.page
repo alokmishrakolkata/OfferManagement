@@ -1,0 +1,17 @@
+<apex:page standardController="Account" extensions="AccCrntrl_new"
+    sidebar="false">
+
+    <!-- softphone -->
+    <apex:iframe src="/apex/ConsoleAccountAsset"
+                    scrolling="false" id="theIframe" width="15%"/>
+                    
+                    
+    <apex:iframe src="/apex/offerpage?id=0019000000vC0tV" scrolling="false"
+                    id="theIframe1" width="85%"/>
+
+
+
+
+
+
+</apex:page>

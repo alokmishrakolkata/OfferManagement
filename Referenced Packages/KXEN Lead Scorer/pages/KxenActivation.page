@@ -1,0 +1,71 @@
+<apex:page controller="KXENLeadScore.QueryKxenController">
+
+	<style type="text/css">
+		#logo_header { 
+			height:76px; 
+			border-bottom: 1px solid #DBDBDB;}
+ 		.content {
+ 			padding: 15px 5px 15px 5px;
+ 			border-top: 1px solid #FFFFFF;}
+ 		.kxh1 {font-size:large}
+	</style>
+
+	<apex:messages />
+	<apex:form >
+		
+		<!-- block displayed if app is not activated -->
+		<apex:pageBlock rendered="{!!kxenActive}">
+		<div id='logo_header'>
+			<img src='{!$Resource.KXEN_logo_white_notag}'></img>
+		</div>
+		<div class='content'>
+		  	Account not activated <br />
+		  	Please activate Lead Scoring.<br />
+		 <p>
+		   <apex:outputText value="{!notActivableMessage}" rendered="{!!activable}" styleClass="errorMsg" escape="false"/>
+		   <apex:outputText value="{!failedMsg}" rendered="{!isFailed}" styleClass="errorMsg" escape="false"/>
+		   <apex:outputText value="{!processingMsg}" rendered="{!isProcessing}" escape="false"/>
+		  </p>
+		  </div>
+		</apex:pageBlock>
+		
+		<!-- block displayed if app is activated -->
+		<apex:pageBlock rendered="{!kxenActive}">
+		<div id='logo_header'>
+			<img src='{!$Resource.KXEN_logo_white_notag}'></img>
+		</div>
+		<div class='content'>
+		<h1 class='kxh1'>KXEN's Predictive Lead Scoring&trade;</h1>
+		<p>
+			Your account is active. Enjoy KXEN Lead Scoring!<br />
+		</p>
+		<!-- display variable chart-->
+        <apex:include pageName="KXENLeadScore__VariableChart"  rendered="{!modelAvailable}"/>
+		<p>
+		    <apex:outputLink value="/00OE0000000cUeQ">Lead Scores</apex:outputLink><br />
+		    <apex:outputLink value="/01ZE0000000Tu0y">Lead Score Model Overview</apex:outputLink><br />
+		    <apex:outputLink value="/00OE0000000cUr7">Max Variable Categories Contribution</apex:outputLink><br />
+		</p>
+		</div>
+		</apex:pageBlock>
+		
+		<!-- additional debug block displayed if user is kxen -->
+		<apex:pageBlock rendered="{!kxenUser}"  
+		    title="Debug present only for @kxen.com users">
+			active?:&nbsp;<apex:outputText value="{!kxenActive}"/><br />
+			not active?:&nbsp;<apex:outputText value="{!!kxenActive}"/><br />
+			LeadScore__Variable  count:&nbsp;<apex:outputText value="{!cnt}"/><br />
+			Leads  count (1000 means >= 1000):&nbsp;<apex:outputText value="{!leadCnt}"/><br />
+			Converted Leads  count (1000 means >= 1000):&nbsp;<apex:outputText value="{!convertedLeadCnt}"/><br />
+			<!-- current page:&nbsp;<apex:outputText value="{!pageReference}"/><br /> -->
+			orgId:&nbsp;<apex:outputText value="{!orgId}"/><br />
+			userId:&nbsp;<apex:outputText value="{!userId}"/><br />
+			API GLOBAL SESSION ID: {!$Api.Session_ID} <br />
+			job creation status:&nbsp;<apex:outputText value="{!status}"/><br />
+			kxenUser?:&nbsp;<apex:outputText value="{!kxenUser}"/><br />
+			<apex:commandButton action="{!submitJob}" value="Submit a Job" reRender="debug_block"/><br />
+			<apex:commandButton action="{!submitJobFuture}" value="Submit a Job (future)" reRender="debug_block"/><br />
+		</apex:pageBlock>
+
+	</apex:form>
+</apex:page>

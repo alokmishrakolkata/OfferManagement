@@ -1,0 +1,30 @@
+<apex:page standardController="Case">
+
+    <A HREF="#" onClick="testOpenSubtab();return false">
+        Click here to open a new subtab</A> 
+
+    <apex:includeScript value="/support/console/22.0/integration.js"/>
+    <script type="text/javascript">
+        function testOpenSubtab() {
+            //First find the ID of the primary tab to put the new subtab in
+            sforce.console.getEnclosingPrimaryTabId(openSubtab);
+        }
+        
+        var openSubtab = function openSubtab(result) {
+            //Now that we have the primary tab ID, we can open a new subtab in it
+            var primaryTabId = result.id;
+            alert('primary'+primaryTabId);
+            sforce.console.openSubtab(primaryTabId , 'https://ap1.salesforce.com/0019000000vBzuI', false, 
+                'salesforce', null, openSuccess, 'salesforceSubtab');
+        };
+        
+        var openSuccess = function openSuccess(result) {
+            //Report whether we succeeded in opening the subtab
+            if (result.success == true) {
+                alert('subtab successfully opened');
+            } else {
+                alert('subtab cannot be opened');
+            }
+        };
+    </script>
+</apex:page>

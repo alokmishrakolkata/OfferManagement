@@ -1,0 +1,16 @@
+<apex:page standardController="Account"
+	extensions="POC_CustomerVerificationController" sidebar="false"
+	showHeader="false">
+<script>
+				MyChart1.on('beforeconfig', function(config) {
+					config.axes[0].margin = -10;
+				});
+			</script>
+			<apex:chart name="MyChart1" height="150" width="250" animate="true"
+				data="{!dataX}">
+				<apex:axis type="Gauge" position="gauge" title="Total Order Amount"
+					minimum="0" maximum="5000" steps="2000" />
+				<apex:gaugeSeries dataField="score" donut="60" colorSet="#00F,#0F0"
+					needle="true" />
+			</apex:chart>
+</apex:page>

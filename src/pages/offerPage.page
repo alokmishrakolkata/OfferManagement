@@ -1,0 +1,15 @@
+<apex:page standardController="Account" extensions="AccCrntrl" sidebar="false" showHeader="false" >
+    
+    
+    	<!-- apex:image id="theImage" value="{!$Resource.CTI}" width="300px" height="200" -->
+    	<apex:include pageName="ConsoleAccountAsset" />
+    
+    
+    <apex:include pageName="POC_Customer_Verification"/>
+    
+    
+  <!--   <analytics:reportChart reportId="00O90000006kT9Y"></analytics:reportChart>  -->
+
+   <!-- <apex:iframe src="https://ap1.salesforce.com/01Z90000000mIKU" scrolling="true" id="theIframe"/>  -->
+
+</apex:page>

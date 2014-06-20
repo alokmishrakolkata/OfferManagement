@@ -1,0 +1,39 @@
+<apex:page Controller="ATT_CreateLeadSubTabController" showheader="false"
+    sidebar="false" tabstyle="Lead">
+    
+    
+	<apex:sectionHeader title="new Lead" subtitle="Lead"/>
+	<apex:form id="idForm" >
+	
+		<apex:pageBlock id="idPageBlock">
+			<apex:pageBlockSection title="new Lead">
+			
+					<apex:inputField value="{!newLead.lastname}"></apex:inputField> 
+				
+					<apex:inputField value="{!newLead.Company}"></apex:inputField>
+					<apex:inputField value="{!newLead.Phone}"></apex:inputField>
+					<apex:inputField value="{!newLead.Status}"></apex:inputField> 
+				
+					<apex:inputField value="{!newLead.Offer__c}"></apex:inputField> 
+				
+					<apex:inputField value="{!newLead.ProductInterest__c}"></apex:inputField>
+				
+			</apex:pageBlockSection>
+			
+
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton action="{!createLead}" value="Create Lead"  />
+			</apex:pageBlockButtons>
+			
+			<apex:pageBlockSection title="Reminder">
+				
+				<apex:inputField value="{!newtask.Subject}"/>
+                <apex:inputField value="{!newtask.Status}"/>
+                <apex:inputField value="{!newtask.Priority}"/>
+                
+                <apex:inputField value="{!newtask.ActivityDate}"/>
+			
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

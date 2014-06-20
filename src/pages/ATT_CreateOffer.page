@@ -1,0 +1,21 @@
+<apex:page controller="ATTCreateOfferController">
+	<apex:form >
+	<apex:pageBlock title="Purchased Products">
+		
+		<apex:selectList value="{!selectedQuestion}" multiselect="false">
+			<apex:selectOptions value="{!allQuestions}"/>
+		</apex:selectList>
+
+		<c:Multiselect leftLabel="Available Products"
+                leftOption="{!allOffers}"
+                rightLabel="Selected Products"
+                rightOption="{!selectedOffers}"
+                size="7"
+                width="200px"/> 
+	
+		<apex:pageBlockButtons >
+			<apex:commandButton action="{!Relate}" value="Relate"/>
+		</apex:pageBlockButtons>
+	</apex:pageBlock>
+	</apex:form>
+</apex:page>

@@ -1,0 +1,120 @@
+<apex:page standardController="Account"
+    extensions="POC_CustomerVerificationController" sidebar="false"
+    showHeader="false" >
+
+    <style>
+	.apexp .bPageBlock.apexDefaultPageBlock .pbBody .pbSubheader{
+		background-color: #D5DADF;
+		border-color: #97999B;
+		color: #333333;
+	}
+	body .bPageBlock, body .bPageBlock .pbBody, body .bPageBlock .pbBottomButtons{
+		background-color: #EDEDED;
+	}
+	
+	.btn{
+		//background: #2F97CA;
+		background: -webkit-linear-gradient(#5CAFD6, #2F97CA);
+		background: -o-linear-gradient(#5CAFD6, #2F97CA);
+		background: -moz-linear-gradient(#5CAFD6, #2F97CA);
+		background: linear-gradient(#5CAFD6, #2F97CA);
+		color: white;
+		align-self: flex-end;
+		font-weight: normal;
+		width: 100px;
+		border-radius: 4px;
+	}
+	
+	body .bPageBlock, body #bodyCell .bResource .secondaryPalette, body .secondaryPalette.bPageBlock, body .individualPalette .secondaryPalette.bPageBlock, body .bodyDiv .genericTable, body .genericPageBlockTable, body .bodyDiv .bSubBlock, body .bComponentBlock .bPageBlock, body .bMyDashboard .bPageBlock, body.rlHoverFrame .bPageBlock, body.subjectSelectionPopup div.choicesBox, body.lookupTab .secondaryPalette.bPageBlock, body.popupTab .secondaryPalette.bPageBlock, body.UserTagStatsPage .secondaryPalette.bPageBlock{
+		background-color: #EDEDED;
+		font-size: 11px;
+	}
+	</style>
+    
+    <apex:form id="frm" >
+        <apex:include pageName="DispositionSection" rendered="{!addressVal.isVerified}" />
+        <apex:pageBlock id="pb">
+            <apex:Pagemessages />
+            <apex:pageBlockSection title="Customer Validation" columns="1"
+                rendered="{!NOT(addressVal.isVerified)}">
+
+                <apex:panelGrid columns="3">
+                    <apex:inputCheckbox value="{!addressVal.name}" />
+                    <apex:outputText value="Name:"></apex:outputText>
+                    <apex:outputField value="{!currentAccount.name}"></apex:outputField>
+
+
+                    <apex:inputCheckbox value="{!addressVal.phone}" />
+                    <apex:outputText value="Phone:"></apex:outputText>
+                    <apex:outputField value="{!currentAccount.Phone}"></apex:outputField>
+
+                    <apex:inputCheckbox value="{!addressVal.ssn}" />
+                    <apex:outputText value="SSN:"></apex:outputText>
+                    <apex:outputField value="{!currentAccount.SSN__c}"></apex:outputField>
+
+                    <apex:inputCheckbox value="{!addressVal.ban}" />
+                    <apex:outputText value="BAN:"></apex:outputText>
+                    <apex:outputField value="{!currentAccount.Billing_Account_Number__c}"></apex:outputField>
+
+                    <apex:inputCheckbox value="{!addressVal.address}" />
+                    <apex:outputText value="Billing address:"></apex:outputText>
+                    <apex:outputField value="{!currentAccount.Billing_Address__c}"></apex:outputField>
+
+                </apex:panelGrid>
+
+            </apex:pageBlockSection>
+
+            
+                
+            
+
+            <apex:pageBlockButtons rendered="{!NOT(addressVal.isVerified)}" location="bottom">
+                <apex:commandButton action="{!verify}" value="Validate" rerender="frm" style="background: linear-gradient(#5CAFD6, #2F97CA); color: white; 	align-self: flex-end; font-weight: normal; width: 100px; border-radius: 4px;" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+		
+		<style>
+			.progress1 {
+			 width: 100%;   
+			 border: 1px solid #008DD3;
+			 position: relative;
+			 padding: 1px;
+			}
+			
+			.percent1 {
+			 position: absolute;   
+			 left: 50%;
+			}
+			
+			.bar1 {
+			 height: 14px;
+			 //background-color: #008DD3;
+			 background-color: green;
+			 width: 30%;
+			}
+		
+		
+		</style>
+
+		<apex:pageBlock id="pb0">
+            <apex:pageBlockSection title="Welcome {!$User.Username}" columns="1" >
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Order Target"></apex:outputLabel>
+                    <apex:outputText value="$10000" id="theFirst"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Achievement"></apex:outputLabel>
+                    <apex:outputText value="$3000" id="theFirst"/>
+                </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                <div id="progress1" class="progress1">
+                    <span id="percent1" class="percent1">30%</span>
+               		<div id="bar1" class="bar1"></div>
+                </div>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>

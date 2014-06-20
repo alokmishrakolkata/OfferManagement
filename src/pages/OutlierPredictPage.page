@@ -1,0 +1,29 @@
+<apex:page controller="OutlierPredictionCtrlr" >
+  <apex:form >
+    <apex:actionFunction name="showResol" action="{!runDetail}" rerender="outlierDetail, slnDetail"/>
+   
+  <apex:pageBlock id="pgBlk" >
+      <apex:pageBlockSection columns="2" title="Care Case">
+          <apex:pageblockSectionItem ><apex:outputLabel >Outlier Prediction: </apex:outputLabel></apex:pageblockSectionItem><apex:pageblockSectionItem rendered="false" ><apex:outputLabel >Answer/Resolution: </apex:outputLabel></apex:pageblockSectionItem>
+          <apex:pageblockSectionItem ><apex:inputField value="{!objOLP.Prediction__c}" onchange="showResol();" /></apex:pageblockSectionItem>
+          <apex:pageblockSectionItem rendered="false"><apex:inputField value="{!objOLP.Possible_Resolution__c}" onchange="showSoln()" /></apex:pageblockSectionItem>
+      </apex:pageBlockSection>
+  </apex:pageBlock>
+  <apex:pageblock rendered="false">
+      <apex:pageblockSection columns="1" title="Probable Reason Customer could have called">
+      <apex:pageblockTable value="{!lstDtls}" var="item" id="outlierDetail">
+          <apex:column value="last contacted on {!item.Date__c}"/>
+          <apex:column ><apex:outputField value="{!item.Description__c}"/></apex:column>
+          <apex:column value="{!item.No_of_Actions__c} no of conversasions past 48 hrs. "/>
+      </apex:pageblockTable>
+      </apex:pageblockSection>
+  </apex:pageblock>
+  <apex:pageblock >
+     <apex:pageBlockSection id="slnDetail">
+         <apex:pageBlockSectionItem >
+              <apex:outputLabel escape="false"><table border="0" cellpadding="0" cellspacing="0" width="321"><colgroup><col style="width: 75px; "></col><col style="width: 92px; "></col><col style="width: 76px; "></col><col style="width: 79px; "></col></colgroup><tbody><tr height="20" style="height: 20px; "><td colspan="1" rowspan="1" height="20" style="height: 20px; width: 75px; font-size: 11.0pt; color: #002060; font-weight: 700; text-decoration: none; font-family: Calibri; ">				BillCycle</td><td colspan="1" rowspan="1" style="width: 92px; font-size: 11.0pt; color: #002060; font-weight: 700; text-decoration: none; font-family: Calibri; ">				BillAmount</td><td colspan="1" rowspan="1" style="width: 76px; font-size: 11.0pt; color: #002060; font-weight: 700; text-decoration: none; font-family: Calibri; ">				DueDate</td><td colspan="1" rowspan="1" style="width: 79px; font-size: 11.0pt; color: #002060; font-weight: 700; text-decoration: none; font-family: Calibri; ">				PaidDate</td></tr><tr height="20" style="height: 20px; "><td colspan="1" rowspan="1" height="20" style="height: 20px; font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				Feb-14</td><td colspan="1" rowspan="1" style="font-size: 11.0pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				$250</td><td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				11-Mar</td><td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				05-Mar</td></tr><tr height="20" style="height: 20px; "><td colspan="1" rowspan="1" height="20" style="height: 20px; font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				Mar-14</td><td colspan="1" rowspan="1" style="font-size: 11.0pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				$257</td><td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				11-Apr</td><td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				05-Mar</td></tr><tr height="20" style="height: 20px; "><td colspan="1" rowspan="1" height="20" style="height: 20px; font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				Apr-14</td><td colspan="1" rowspan="1" style="font-size: 11.0pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				$251</td><td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				11-May</td><td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				05-Mar</td></tr><tr height="20" style="height: 20px; "><td colspan="1" rowspan="1" height="20" style="height: 20px; font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				May-14</td><td colspan="1" rowspan="1" style="font-size: 11.0pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				$358</td><td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">				11-Jun</td><td colspan="1" rowspan="1" style="font-size: 11.0pt; color: red; font-weight: 700; text-decoration: none; font-family: Calibri; ">				Not Yet</td></tr></tbody></table></apex:outputLabel>
+          </apex:pageBlockSectionItem>
+      </apex:pageBlockSection>
+  </apex:pageblock>
+  </apex:form>
+</apex:page>

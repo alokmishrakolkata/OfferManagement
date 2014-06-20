@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <chart>
+        <chartSummaries>
+            <column>Variable__c$Contribution__c</column>
+        </chartSummaries>
+        <chartType>None</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>false</expandOthers>
+        <groupingColumn>Variable__c$Name</groupingColumn>
+        <showAxisLabels>false</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+    </chart>
+    <columns>
+        <field>Variable__c$Name</field>
+    </columns>
+    <columns>
+        <field>Variable__c$Contribution__c</field>
+    </columns>
+    <filter>
+        <criteriaItems>
+            <column>Variable__c$Object__c</column>
+            <operator>equals</operator>
+            <value>LeadScoreLive</value>
+        </criteriaItems>
+    </filter>
+    <format>Tabular</format>
+    <name>Max Variable Contribution</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Variable_Contribution__c</reportType>
+    <rowLimit>25</rowLimit>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Variable__c$Contribution__c</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Variable__c$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

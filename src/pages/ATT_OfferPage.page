@@ -1,0 +1,432 @@
+<apex:page standardController="Account"
+    extensions="ATTOfferPageControllerExt" showheader="false"
+    sidebar="false">
+	
+	<!-- 
+    <apex:stylesheet value="{!URLFOR($Resource.CatalogLibrary1, '/CatalogLibrary1/css/accordion.css')}" />
+     -->
+<style>
+.apexp .bPageBlock.apexDefaultPageBlock .pbBody .pbSubheader{
+	background-color: #D5DADF;
+	border-color: #97999B;
+	color: #333333;
+}
+body .bPageBlock, body .bPageBlock .pbBody, body .bPageBlock .pbBottomButtons{
+	background-color: #EDEDED;
+}
+
+.buttonStyle{
+	//background: #2F97CA;
+	background: -webkit-linear-gradient(#5CAFD6, #2F97CA);
+	background: -o-linear-gradient(#5CAFD6, #2F97CA);
+	background: -moz-linear-gradient(#5CAFD6, #2F97CA);
+	background: linear-gradient(#5CAFD6, #2F97CA);
+	color: white;
+	align-self: flex-end;
+	font-weight: normal;
+	width: 100px;
+	border-radius: 4px;
+}
+body .bPageBlock, body #bodyCell .bResource .secondaryPalette, body .secondaryPalette.bPageBlock, body .individualPalette .secondaryPalette.bPageBlock, body .bodyDiv .genericTable, body .genericPageBlockTable, body .bodyDiv .bSubBlock, body .bComponentBlock .bPageBlock, body .bMyDashboard .bPageBlock, body.rlHoverFrame .bPageBlock, body.subjectSelectionPopup div.choicesBox, body.lookupTab .secondaryPalette.bPageBlock, body.popupTab .secondaryPalette.bPageBlock, body.UserTagStatsPage .secondaryPalette.bPageBlock{
+background-color: #EDEDED;
+}
+//.accountTab .secondaryPalette, .individualPalette .accountBlock .secondaryPalette{
+//border-color: #EDEDED;
+//}
+
+//body{
+//background-color: #EDEDED;
+//}
+
+</style>
+     <style>
+.horizontal .progress-bar {
+
+  float: left;
+  height: 45px;
+  width: 100%;
+  padding: 12px 0;
+  
+}
+.horizontal .progress-track {
+  position: relative;
+  height: 12px;
+width: 100%;
+  background: #ebebeb;
+   border-bottom-left-radius: 5px;
+border-bottom-right-radius: 5px;
+border-top-left-radius: 5px;
+border-top-right-radius: 5px;
+border: 1px solid;
+}
+ 
+.horizontal .progress-fill {
+  position: relative;
+
+  border-bottom-left-radius: 5px;
+border-bottom-right-radius: 5px;
+border-top-left-radius: 5px;
+border-top-right-radius: 5px;
+
+ 
+  color: #fff;
+  text-align: center;
+  font-family: "Lato","Verdana",sans-serif;
+  
+  font-size: 9px;
+    height: 12px;
+    line-height: 8px;
+} 
+
+</style>
+    <apex:includeScript value="{!URLFOR($Resource.CatalogLibrary1, '/CatalogLibrary1/js/jquery2.0.3.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CatalogLibrary1, '/CatalogLibrary1/js/jqueryaccordion.js')}" />
+    <apex:includeScript value="/support/console/22.0/integration.js" />
+
+
+    <script
+        src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"
+        type="text/javascript"></script>
+
+<apex:includeScript value="/support/console/26.0/integration.js"/>
+    <script type="text/javascript">
+        function testGetPrimaryTabIds() {
+              sforce.console.getPrimaryTabIds(showTabId);
+        }
+        
+        var showTabId = function showTabId(result) {
+            //Display the primary tab IDs
+            alert('Primary Tab IDs: ' + result.ids);
+            };
+  </script>
+    <apex:form id="theForm">
+    	<apex:actionFunction action="{!insertNotes}" name="submitNotes" rerender="chooseColor" />
+    	
+    	
+    	<apex:pageBlock rendered="{!NOT(renderOffers)}">
+			<apex:pageBlockSection collapsible="true" id="toppbs" columns="1" title="Agent Script">
+				<apex:pageblockSectionItem >
+					<apex:outputText value="Mr John Corner, Thank you for information - I can see the charge…. I will be able to help you with that today."></apex:outputText>
+				</apex:pageblockSectionItem>
+				<apex:pageblockSectionItem >
+					<apex:outputText value="While I solve this, may I ask for What do you use the current services? I may have exciting options for you to reduce your monthly charges and make them more predictable."></apex:outputText>
+				</apex:pageblockSectionItem>
+				<apex:pageblockSectionItem rendered="{!renderOffers}">
+					<apex:outputText value="Mr John Corner, thank you for your patience. I will waive off the additional charges today. I will also put in an order to convert your services"></apex:outputText>
+				</apex:pageblockSectionItem>
+				<apex:pageblockSectionItem rendered="{!renderOffers}">
+					<apex:outputText value="I Will put a reminder in the sysem(CREATE LEAD) to call you back in December to offer yuou a cost effective comprehensive solution for TV and security"></apex:outputText>
+				</apex:pageblockSectionItem>
+				
+				<apex:PageBlockTable var="script" value="{!agentScripts}" >
+					
+					<apex:column >
+						<apex:outputText value="{!script.question}"></apex:outputText>
+					</apex:column>
+					<apex:column >
+						<apex:inputCheckbox value="{!script.answer}" rendered="{!script.questiontype=='boolean'}"></apex:inputCheckbox>
+						<apex:inputText value="{!script.answer}" rendered="{!NOT(script.questiontype=='boolean')}"></apex:inputText>
+						
+					</apex:column>
+				</apex:PageBlockTable>
+				
+			</apex:pageBlockSection>
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton action="{!SubmitAgentAcripts}" value="Submit" rerender="theForm" status="hideQuestions"/>
+				<apex:actionStatus id="hideQuestions" layout="block">
+                     <apex:facet name="start">
+                         <div
+                             style="margin-top: 0px; margin-left: 0%; z-index: 2; position: absolute; background: lightgreen;">
+                             <font color="blue"><img src="/img/loading32.gif"
+                                 height="20" width="20" /> Updating Offers...</font>
+                         </div>
+                     </apex:facet>
+                     <apex:facet name="stop"></apex:facet>
+                 </apex:actionStatus>
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+		{!renderOffers}
+		
+        <apex:pageBlock id="outerPB" rendered="{!renderOffers}">
+
+            <apex:panelGrid id="idMessages">
+                <apex:pageMessages />
+            </apex:panelGrid>
+
+
+            <apex:pageBlockSection collapsible="true" id="pbs1" columns="1" title="Offers" >
+            
+            	<apex:pageBlockSectionItem >
+            	<p>1. John Corner has a "DEAL SWEETENER" worth $60 
+					2. WHICH IS THE BEST DEAL FOR JOHN<br />
+					    &nbsp;&nbsp;&nbsp;1. He also needs HIS<br />
+					    &nbsp;&nbsp;&nbsp;2. He is under COMCAST ADT Contract<br />
+					    &nbsp;&nbsp;&nbsp;3. He pays $ 100 to COMCAST+ADT combined<br />
+					3. Option 1 looks best
+            	</p>
+            	</apex:pageBlockSectionItem>
+                <apex:pageBlockTable value="{!dynamicQuestionWrappers}"
+                    var="dynamicQuestionWrapper" id="pbTable"  style="background: linear-gradient(#FCFCFC, #F5F5F5);" rendered="false">
+					<!-- rendered="{!dynamicQuestionWrappers.size > 0}" -->
+                    
+
+                    <apex:column >
+
+                        <apex:facet name="header">
+                            <apex:inputCheckbox value="{!boolMasterCheckQuestions}"
+                                id="idMasterCheckBox" title="Toggle all Questions">
+                                <apex:actionSupport rerender="outerPB"
+                                    event="onclick" status="selectOfferStatusQuestions"
+                                    action="{!viewOffersMasterSelect}">
+                                </apex:actionSupport>
+                                
+                                <apex:actionStatus id="selectOfferStatusQuestions" layout="block">
+                                    <apex:facet name="start">
+                                        <div
+                                            style="margin-top: 0px; margin-left: 0%; z-index: 2; position: absolute; background: lightgreen;">
+                                            <font color="blue"><img src="/img/loading32.gif"
+                                                height="20" width="20" /> Updating Offers...</font>
+                                        </div>
+                                    </apex:facet>
+                                    <apex:facet name="stop"></apex:facet>
+                                </apex:actionStatus>
+                                
+                            </apex:inputCheckbox>
+                            
+                        </apex:facet>
+
+                        <apex:inputCheckbox value="{!dynamicQuestionWrapper.bCheck}">
+                            <apex:actionSupport rerender="outerPB" event="onclick"
+                                status="selectOfferStatus" action="{!viewOffers}" />
+                            <apex:actionStatus id="selectOfferStatus" layout="block">
+                                <apex:facet name="start">
+                                    <div
+                                        style="margin-top: 0px; margin-left: 0%; z-index: 2; position: absolute; background: lightgreen;">
+                                        <font color="blue"><img src="/img/loading32.gif"
+                                            height="20" width="20" /> Updating Offers...</font>
+                                    </div>
+                                </apex:facet>
+                                <apex:facet name="stop"></apex:facet>
+                            </apex:actionStatus>
+                        </apex:inputCheckbox>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Dynamic Discovery Questions</apex:facet>
+                        <apex:outputText value="{!dynamicQuestionWrapper.dynamicQuestion.Que_Description__c}" />
+                    </apex:column>
+                </apex:pageBlockTable>
+            
+
+
+
+                <script type="text/javascript">
+                    $(document).ready(function() {
+
+                        $('div.accordion').accordion({
+                            speed : 'slow',
+                            cssClose : 'accordion-close', //class you want to assign to a closed accordion header
+                            cssOpen : 'accordion-open'
+                        });
+
+                    });
+                    function submitNotes1(){
+                    	submitNotes();
+                    	//alert('Input Submitted!');
+                    	//testGetPrimaryTabIds();
+                    	 var primaryTabId = 'scc-pt-0';
+            			sforce.console.refreshPrimaryTabById(primaryTabId, true, refreshSuccess);
+                    }
+                    var refreshSuccess = function refreshSuccess(result) {
+			            //Report whether refreshing the primary tab was successful
+			            if (result.success == true) {
+			                alert('Input Submitted!');
+			            } else {
+			                alert('Input Submitted!');
+			            }
+			        };
+                </script>
+
+
+
+					<style>
+.showhideblock {
+	float: left;
+	padding: 0px 6px 0;
+	position: relative;
+}
+
+a.show_hide {
+    background: none repeat scroll 0 0 #f2911e;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    float: left;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    vertical-align: baseline;
+    width: 16px;
+}
+</style>
+					<apex:outputpanel >
+                    <apex:repeat value="{!newOfferWrappers}" var="newOfferWrapper"
+                        id="theRepeat">
+                        <div class="accordion"
+                            style="margin-top: 10px; padding: 5px; font-weight: bold; font-size: 11px; color: #4B4B4B; text-transform: capitalize; height: auto; vertical-align: middle; background: linear-gradient(#FCFCFC, #F5F5F5);border: 1px solid #8d8d8d;">
+				
+				
+				<a class="show_hide" href="#" rel="#a029000000A3c5ZAAR" id="anchorPM">+</a>
+				<div class="showhideblock">
+						<apex:image id="theImage"
+                              value="{!$Resource.CrossSellLogo}" width="15" height="15"
+                              rendered="{!newOfferWrapper.offer.is_Cross_Sell__c}"
+                              title="Cross Sell" /> <apex:image id="theImage1"
+                              value="{!$Resource.UpSellLogo}" width="15" height="15"
+                              rendered="{!NOT(newOfferWrapper.offer.is_Cross_Sell__c)}"
+                              title="Up Sell" />
+				</div>
+				
+						<div style="float: left; z-index: 1;"><span>{!newOfferWrapper.offer.Offer_Description__c}</span></div>
+						<div class="progress-bar horizontal" style="float: right;width: 80px; z-index: 0">
+                            <div class="progress-track">
+                                <div class="progress-fill"
+                                    style="width: {!newOfferWrapper.offer.popularity__c}%; padding: 0px; background: {!newOfferWrapper.popularityColor};">
+                                    <span style="background: none; padding: 0px; color: rgb(20, 18, 85);">{!newOfferWrapper.offer.popularity__c}%</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+
+                            <table width="100%"
+                                style="border-collapse: collapse; font-weight: normal; font-size: 11px; text-shadow: none;font-family: Arial; ">
+                                <tr>
+                                    <td style="vertical-align: middle; color: #4B4B4B;">
+                                        &nbsp;
+
+                                    </td>
+                                    <td style="vertical-align: middle; color: #4B4B4B;"><apex:dataList value="{!newOfferWrapper.offerFeatures}" var="feature">
+                                            <apex:outputText value="{!feature}" />
+                                        </apex:dataList></td>
+                                    <td style="vertical-align: middle;"></td>
+                                </tr>
+                            </table>
+
+                        </div>
+
+                        <div class="content1" style="background: linear-gradient(#EDEDED, #D5DADF);">
+                            <table width="100%"
+                                style="border-collapse: collapse; border: thin; font-weight: normal; font-size: 11px; text-shadow: none; color: #E7E7E7;font-family: Arial,Helvetica,sans-serif;border: 1px solid #8d8d8d;border-top: none;">
+                                <tr>
+                                    <td style="vertical-align: middle;">
+                                    	<apex:dataList value="{!newOfferWrapper.offerFeatures}" var="feature">
+                                            <apex:outputText value="{!feature}" />
+                                        </apex:dataList> 
+                                        
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align: middle;">
+
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <h3>Customer Not Interested</h3>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+													<apex:selectList id="chooseColor" value="{!strRejectOpt}" size="3" 
+														style="font-family: Arial,Helvetica,sans-serif; font-size: 10px;">
+											            <apex:selectOption itemValue="I don't need the service" itemLabel="I don't need the service"/>
+											            <apex:selectOption itemValue="I have never used theservices" itemLabel="I have never used theservices"/>
+											            <apex:selectOption itemValue="I don't have the devices" itemLabel="I don't have the devices"/>
+											        </apex:selectList>
+												</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input value="Submit" type="button" onClick="submitNotes1();"
+                                                			style="background: linear-gradient(#5CAFD6, #2F97CA); color: white;  align-self: flex-end; font-weight: normal; width: 100px; border-radius: 4px;" /></td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                    	<input value="Create Order" type="button" style="background: linear-gradient(#5CAFD6, #2F97CA); color: white;  align-self: flex-end; font-weight: normal; width: 100px; border-radius: 4px;" onClick="testOpenSubtab('newOrder','{!newOfferWrapper.offer.id}','{!currentAccount.id}');return false"/> 
+                                        <input value="Create Lead" type="button" style="background: linear-gradient(#5CAFD6, #2F97CA); color: white;  align-self: flex-end; font-weight: normal; width: 100px; border-radius: 4px;" onClick="testOpenSubtab('newLead','{!newOfferWrapper.offer.id}','{!currentAccount.id}');return false"/>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </apex:repeat>
+                </apex:outputpanel>
+
+			</apex:pageBlockSection>
+
+
+
+        </apex:pageBlock>
+
+    </apex:form>
+	<script type="text/javascript">
+		var selectedOfferId = null;
+		var selectedAccountId = null;
+		var pageUrl = null;
+		var imageUrl = null;
+		var tabLabel = null;
+        function testOpenSubtab(task,offerId,accountId) {
+        	selectedOfferId = offerId;
+        	selectedAccountId = accountId;
+            //First find the ID of the primary tab to put the new subtab in
+            if(task=='newOrder'){
+            	pageUrl = 'ATT_CreateOrderSubTab';
+            	tabLabel = 'New Order';
+            	imageUrl = '/img/icon/orderBell24.png';
+            }else if(task=='newLead'){
+            	pageUrl = 'ATT_CreateLeadSubTab';
+            	tabLabel = 'New Lead';
+            	imageUrl = '/img/icon/bigtop24.png';
+            }
+            
+           	sforce.console.getEnclosingPrimaryTabId(openSubtab);
+        }
+
+        var openSubtab = function openSubtab(result) {
+            //Now that we have the primary tab ID, we can open a new subtab in it
+            var primaryTabId = result.id;
+            sforce.console.openSubtab(primaryTabId, '/apex/'+pageUrl+'?offerId='+selectedOfferId+'&accountId='+selectedAccountId,
+                    false, tabLabel, null, openSuccess, 'salesforceSubtab');
+        };
+		
+		var subtabIdt = null;
+        var openSuccess = function openSuccess(result) {
+            //Report whether we succeeded in opening the subtab
+            if (result.success == true) {
+            	subtabIdt = result.id;
+            	
+            	testFocusSubtabById(subtabimage);
+            	//sforce.console.setTabIcon(imageUrl, result.id);
+                //alert('subtab successfully opened'+result.id); 
+            } else {
+                //alert('subtab cannot be opened');
+            }
+        };
+        
+        function subtabimage(result){
+			sforce.console.setTabIcon(imageUrl, null);
+			alert('d');
+		}
+        
+        function testFocusSubtabById() {
+            //Get the value for 'scc-st-0' from the openSubtab method
+            //This value is for example purposes only
+            var subtabId = subtabIdt;//'scc-st-0';
+            sforce.console.focusSubtabById(subtabId);
+        }
+    </script>
+   
+</apex:page>

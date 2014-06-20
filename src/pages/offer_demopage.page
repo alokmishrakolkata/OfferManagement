@@ -1,0 +1,170 @@
+<apex:page standardController="Account" extensions="AccCrntrl_demo">
+    <apex:stylesheet value="{!URLFOR($Resource.CatalogLibrary, '/CatalogLibrary/css/accordion.css')}" />
+
+    <apex:includeScript value="{!URLFOR($Resource.CatalogLibrary, '/CatalogLibrary/js/jquery2.0.3.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CatalogLibrary, '/CatalogLibrary/js/jqueryaccordion.js')}" />
+    <apex:includeScript value="/support/console/22.0/integration.js" />
+
+    <script type="text/javascript">
+        function testOpenSubtab() {
+            //First find the ID of the primary tab to put the new subtab in
+            sforce.console.getEnclosingPrimaryTabId(openSubtab);
+        }
+
+        var openSubtab = function openSubtab(result) {
+            //Now that we have the primary tab ID, we can open a new subtab in it
+            var primaryTabId = result.id;
+            //sforce.console.openSubtab(primaryTabId, '/' + '{!testOrder.id}',
+            sforce.console.openSubtab(primaryTabId, '/apex/reportpage',
+                    false, 'salesforce', null, openSuccess, 'salesforceSubtab');
+        };
+
+        var openSuccess = function openSuccess(result) {
+            //Report whether we succeeded in opening the subtab
+            if (result.success == true) {
+                alert('subtab successfully opened');
+            } else {
+                alert('subtab cannot be opened');
+            }
+        };
+    </script>
+
+    <apex:form >
+        <apex:pageBlock title="DDQ's" id="outerPB" mode="detail">
+            <script type="text/javascript">
+                $(document).ready(function() {
+
+                    $('div.accordion').accordion({
+                        speed : 'slow',
+                        cssClose : 'accordion-close', //class you want to assign to a closed accordion header
+                        cssOpen : 'accordion-open'
+                    });
+
+                });
+            </script>
+            <apex:panelGrid id="idMessages">
+                <apex:pageMessages />
+            </apex:panelGrid>
+
+            <apex:pageBlockTable value="{!displyWrap}" var="Qvar" id="pbTable">
+                <apex:column >
+                    <apex:outputText value="{!Qvar.DDqrec.Que_Description__c}" />
+                </apex:column>
+                <apex:column >
+                    <apex:selectList id="chooseColor" value="{!Qvar.optn}" size="1">
+                        <!-- onchange="gtOffersforQ({!Qvar.optn})"-->
+                        <apex:selectOption itemValue="No" itemLabel="No" />
+                        <apex:selectOption itemValue="Yes" itemLabel="Yes" />
+                        <apex:actionSupport event="onchange"
+                            reRender="pbTable,offrTabl,shoCart,outp" action="{!changeQue}"
+                            status="selectOfferStatus">
+                            <apex:param name="offernm" value="{!Qvar.DDqrec.id}"
+                                assignTo="{!offernm}" />
+                            </apex:actionsupport>
+                    </apex:selectList>
+                    <!--    <apex:actionFunction name="gtOffersforQ" action="{!DisableOrEnableAddOfficeContactButton}" reRender="AddOfficeContactButtonTop, AddOfficeContactButtonBottom" immediate="true">
+                                <apex:param value="" name="NewWhoId"/>
+                            </apex:actionFunction> -->
+
+                    <apex:actionStatus id="selectOfferStatus" layout="block">
+                        <apex:facet name="start">
+                            <div
+                                style="margin-top: 0px; margin-left: 0%; z-index: 2; position: absolute; background: lightgreen;">
+                                <font color="blue"><img src="/img/loading32.gif"
+                                    height="20" width="20" /> Fetching Offers...</font>
+                            </div>
+                        </apex:facet>
+                        <apex:facet name="stop"></apex:facet>
+                    </apex:actionStatus>
+                </apex:column>
+
+
+            </apex:pageBlockTable>
+
+            <br />
+
+            <apex:outputPanel id="outp">
+                <apex:repeat value="{!offrelinItm}" var="vOffer" id="offrTabl">
+
+                    <div class="accordion"
+                        style="margin-top: 5px; padding: 5px; font-weight: bold; font-size: 14px; color: #fff; text-transform: capitalize;">
+                        {!vOffer.Product_Name_text__c}&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                    <div class="content1">
+                        <table id="selT" width="100%" style="border-collapse: collapse;">
+                            <tr>
+                                <td><apex:outputText value="{!vOffer.Product_Name_text__c}" />
+                                </td>
+                                <td><apex:outputText value="{!vOffer.Offer_Description__c}" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </apex:repeat>
+            </apex:outputPanel>
+            <!--   <apex:pageblockTable value="{!offrelinItm}" var="vOffer"
+                id="offrTabl">
+                
+                                
+                <apex:column headerValue="Offered Product">
+                    <apex:outputText value="{!vOffer.Product_Name_text__c}" />
+                </apex:column>
+                <apex:column headerValue="Offer Detail">
+                    <apex:outputText value="{!vOffer.Offer_Description__c}" />
+                </apex:column>
+                <apex:column >
+                    <apex:commandLink value="Select"
+                        action="{!shoppingcart}"
+                        rerender="pbTable,offrTabl,shoCart,pbshopcr" styleclass="btn"  >
+                        <apex:param name="tabRef" value="{!vOffer.Offer_Description__c}"
+                            assignTo="{!tabRef}" />
+                    </apex:commandLink>
+                </apex:column> 
+            </apex:pageblockTable> -->
+        </apex:pageBlock>
+
+        <apex:pageblock title="Selected Offers" id="shoCart">
+
+            <script type="text/javascript">
+                $(document).ready(function() {
+
+                    $('div.accordion').accordion({
+                        speed : 'slow',
+                        cssClose : 'accordion-close', //class you want to assign to a closed accordion header
+                        cssOpen : 'accordion-open'
+                    });
+
+                });
+            </script>
+            <apex:outputPanel >
+                <apex:repeat value="{!selectedoffr}" var="offer" id="pbshopcr">
+                    <div class="accordion">offer</div>
+                    <div class="content1">
+                        <table id="selT" width="100%" style="border-collapse: collapse;">
+                            <td><apex:outputtext value="{!offer.prodName}" /></td>
+                            <td><apex:inputtext value="{!offer.quantty}"
+                                    html-placeholder="Enter Quantity" /></td>
+                            <td><apex:inputtext value="{!offer.price}"
+                                    html-placeholder="Enter Price" /></td>
+                        </table>
+                    </div>
+                </apex:repeat>
+            </apex:outputPanel>
+            <!-- </apex:pageblocktable> -->
+
+            <br />
+
+            <!--   <apex:commandButton value="Create Order" action="{!createOdr}"
+                 style="background-color:grey;background-image:none;float:left;font-family:arial;color:white;font-size:11px;" /> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+            <apex:commandButton value="Create Lead" action="{!createlead}"
+                 style="background-color:grey;background-image:none;font-family:arial;color:white;font-size:11px;"/> <br/><br/>
+           <apex:commandLink style="color:green;font-weight:bold" value="Click to see order" target="_blank" action="{!seeOrder}" rendered="{!renoffer}"/>  
+           <apex:commandLink style="color:green;font-weight:bold" value="Click to see Lead" target="_blank" action="{!seeLead}" rendered="{!renLead}"/>   -->
+            <apex:commandLink value="OPen order"
+                onClick="testOpenSubtab();return false" />
+        </apex:pageblock>
+    </apex:form>
+    <analytics:reportChart reportId="00O90000006kT9Y"></analytics:reportChart>
+
+    <!-- <apex:iframe src="https://ap1.salesforce.com/01Z90000000mIKU" scrolling="true" id="theIframe"/>  -->
+
+</apex:page>

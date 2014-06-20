@@ -1,0 +1,177 @@
+<apex:page controller="OutlierPredictController" id="idPage">
+        <apex:form id="formId">
+        <apex:pageBlock id="pgBlk" >
+            <apex:pageBlockSection columns="2" title="Care Case">
+                <apex:pageblockSectionItem >
+                    <apex:outputLabel >Outlier Prediction: </apex:outputLabel>
+                </apex:pageblockSectionItem>
+                <apex:pageblockSectionItem >
+                    <apex:selectList value="{!SelectedVal}" multiselect="false" size="1" >
+                        <apex:selectoptions value="{!Options}" />
+                        <apex:actionsupport event="onchange" action="{!getInfo}" reRender="pgBlk" status="statusId" />
+                        <apex:actionStatus id="statusId" layout="block">
+                            <apex:facet name="start">
+                                <div
+                                    style="margin-top: 0px; margin-left: 0%; z-index: 2; position: absolute; background: lightgreen;width: inherit;">
+                                    <font color="blue"><img src="/img/loading32.gif"
+                                        height="20" width="20" /> In progress...</font>
+                                </div>
+                            </apex:facet>
+                            <apex:facet name="stop"></apex:facet>
+                        </apex:actionStatus>
+                    </apex:selectList>
+                </apex:pageblockSectionItem>
+            </apex:pageBlockSection>
+        
+        <apex:pageBlockSection id="pb76" columns="1" rendered="{!anOption}"> 
+            
+                <apex:outputPanel id="panel1" rendered="{!AND(isDispOpt1, !isDispOpt2, !isDispOpt3, !isDispOpt4)}">
+                <apex:outputText rendered="{!AND(isDispOpt1, !isDispOpt2, !isDispOpt3, !isDispOpt4)}">
+                <table border="1">
+                    <tbody>
+                        <tr height="20" style="height: 20px; ">
+                            <td colspan="1" rowspan="1" height="20" style="height: 20px; font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            Date of Payment<br/>
+                               <b>- Sep 12, 2013</b></td>
+                            <td colspan="1" rowspan="1" style="font-size: 11.0pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            Subscribed to 'Payment made would get applied in the coming bill cycle.' Text Messaging on Sep 12, 2013 at 10:23 PM MST via pcmag.com</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            Value <br/><b>$71.00</b></td>
+                            </tr>
+                            </tbody></table>
+                            <br />
+                            <table border="0" cellpadding="0" cellspacing="0" width="321">
+                    <tbody><tr height="20" style="height: 20px; ">
+                        <td colspan="1" rowspan="1" height="20" style="height: 20px; width: 75px; font-size: 11.0pt; color: #002060; font-weight: 700; text-decoration: none; font-family: Calibri; ">
+                        BillCycle</td>
+                        <td colspan="1" rowspan="1" style="width: 92px; font-size: 11.0pt; color: #002060; font-weight: 700; text-decoration: none; font-family: Calibri; ">    
+                        BillAmount</td>
+                        <td colspan="1" rowspan="1" style="width: 76px; font-size: 11.0pt; color: #002060; font-weight: 700; text-decoration: none; font-family: Calibri; ">    
+                        DueDate</td>
+                        <td colspan="1" rowspan="1" style="width: 79px; font-size: 11.0pt; color: #002060; font-weight: 700; text-decoration: none; font-family: Calibri; ">
+                        PaidDate</td></tr>
+                        <tr height="20" style="height: 20px; ">
+                            <td colspan="1" rowspan="1" height="20" style="height: 20px; font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            Feb-14</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11.0pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            $250</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            11-Mar</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            05-Mar</td></tr>
+                            <tr height="20" style="height: 20px; ">
+                            <td colspan="1" rowspan="1" height="20" style="height: 20px; font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            Mar-14</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11.0pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            $257</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            11-Apr</td><td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            05-Mar</td></tr>
+                            <tr height="20" style="height: 20px; ">
+                            <td colspan="1" rowspan="1" height="20" style="height: 20px; font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            Apr-14</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11.0pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            $251</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            11-May</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            05-Mar</td></tr>
+                            <tr height="20" style="height: 20px; ">
+                            <td colspan="1" rowspan="1" height="20" style="height: 20px; font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            May-14</td><td colspan="1" rowspan="1" style="font-size: 11.0pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            $358</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            11-Jun</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11.0pt; color: red; font-weight: 700; text-decoration: none; font-family: Calibri; ">
+                            Not Yet</td></tr></tbody></table></apex:outputText>
+                       </apex:outputpanel>
+                       
+                       <apex:outputPanel id="panel2" > <apex:outputText rendered="{!AND(!isDispOpt1, isDispOpt2, !isDispOpt3, !isDispOpt4)}">
+                <table style="border:1px solid black;" >
+                    <tbody><tr ><td>
+                       Effective Bill Date<br/>
+                       <b>- Oct 10, 2013</b></td>
+                        <td>
+                        Subscribed to '"Buy Additional Subsription to avail the Discount: 1st - All South America free dailing (Not valid for Argentina) 2nd - Country Specific free dailling (Not valid for Argentina)"' Text Messaging on Oct 10, 2013 at 10:23 PM MST via pcmag.com</td>
+                        <td>    
+                        Value<br/>
+                        <b>$85.00</b></td>
+                        <td>
+                      2<br/>
+                       2 Conversations past 48 hours</td>
+                        </tr></tbody></table>                </apex:outputText>
+                       </apex:outputpanel>
+                       
+                       <apex:outputPanel id="panel3" >                <apex:outputText rendered="{!AND(!isDispOpt1, !isDispOpt2, isDispOpt3, !isDispOpt4)}">
+                <table border="0" cellpadding="0" cellspacing="0" width="321">
+                    <tbody><tr height="20" style="height: 20px; ">
+                        <td colspan="1" rowspan="1" height="20" style="height: 20px; width: 75px; font-size: 11.0pt; color: #002060; font-weight: 700; text-decoration: none; font-family: Calibri; ">
+                        BillCycle</td>
+                        <td colspan="1" rowspan="1" style="width: 92px; font-size: 11.0pt; color: #002060; font-weight: 700; text-decoration: none; font-family: Calibri; ">    
+                        BillAmount</td>
+                        <td colspan="1" rowspan="1" style="width: 76px; font-size: 11.0pt; color: #002060; font-weight: 700; text-decoration: none; font-family: Calibri; ">    
+                        DueDate</td>
+                        <td colspan="1" rowspan="1" style="width: 79px; font-size: 11.0pt; color: #002060; font-weight: 700; text-decoration: none; font-family: Calibri; ">
+                        PaidDate</td></tr>
+                        <tr height="20" style="height: 20px; ">
+                            <td colspan="1" rowspan="1" height="20" style="height: 20px; font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            Feb-14</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11.0pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            $250</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            11-Mar</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            05-Mar</td></tr>
+                            <tr height="20" style="height: 20px; ">
+                            <td colspan="1" rowspan="1" height="20" style="height: 20px; font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            Mar-14</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11.0pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            $257</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            11-Apr</td><td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            05-Mar</td></tr>
+                            <tr height="20" style="height: 20px; ">
+                            <td colspan="1" rowspan="1" height="20" style="height: 20px; font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            Apr-14</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11.0pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            $251</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            11-May</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            05-Mar</td></tr>
+                            <tr height="20" style="height: 20px; ">
+                            <td colspan="1" rowspan="1" height="20" style="height: 20px; font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            May-14</td><td colspan="1" rowspan="1" style="font-size: 11.0pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            $358</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11pt; color: black; font-weight: 400; text-decoration: none; font-family: Calibri; ">
+                            11-Jun</td>
+                            <td colspan="1" rowspan="1" style="font-size: 11.0pt; color: red; font-weight: 700; text-decoration: none; font-family: Calibri; ">
+                            Not Yet</td></tr></tbody></table>                </apex:outputText>
+                       </apex:outputpanel>
+                       
+                       <apex:outputPanel id="panel4"  >                <apex:outputText rendered="{!AND(!isDispOpt1, !isDispOpt2, !isDispOpt3, isDispOpt4)}" >
+
+                       <table style="border:1px solid black;" >
+                           <tr>
+                               <td>
+                               Verify if adjustment was applied after the bill cycle.<br />
+                               <b>- Nov 18, 2013</b></td>
+                               <td>
+                                Subscribed to 'If Not, Create a ticket for Billing team/Account team to rectify missed Adjustment' Text Messaging on Nov 18, 2013 at 10:23 PM MST via pcmag.com
+                               </td>
+                               <td>
+                                   Value <br/>
+                                   <b>$96.00</b>
+                               </td>
+                               <td>
+                               2<br />
+                               Conversations past 48 hours
+                               </td>
+                           </tr>
+                       </table>
+                </apex:outputText>
+                       </apex:outputpanel>
+           </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,275 @@
+<apex:page Standardcontroller="Account" extensions="OutlierPredictController" id="idPage">
+<style>
+.apexp .bPageBlock.apexDefaultPageBlock .pbBody .pbSubheader{
+	background-color: #D5DADF;
+	border-color: #97999B;
+	color: #333333;
+}
+body .bPageBlock, body .bPageBlock .pbBody, body .bPageBlock .pbBottomButtons{
+	background-color: #EDEDED;
+}
+
+.buttonStyle{
+	//background: #2F97CA;
+	background: -webkit-linear-gradient(#5CAFD6, #2F97CA);
+	background: -o-linear-gradient(#5CAFD6, #2F97CA);
+	background: -moz-linear-gradient(#5CAFD6, #2F97CA);
+	background: linear-gradient(#5CAFD6, #2F97CA);
+	color: white;
+	align-self: flex-end;
+	font-weight: normal;
+	width: 100px;
+	border-radius: 4px;
+}
+body .bPageBlock, body #bodyCell .bResource .secondaryPalette, body .secondaryPalette.bPageBlock, body .individualPalette .secondaryPalette.bPageBlock, body .bodyDiv .genericTable, body .genericPageBlockTable, body .bodyDiv .bSubBlock, body .bComponentBlock .bPageBlock, body .bMyDashboard .bPageBlock, body.rlHoverFrame .bPageBlock, body.subjectSelectionPopup div.choicesBox, body.lookupTab .secondaryPalette.bPageBlock, body.popupTab .secondaryPalette.bPageBlock, body.UserTagStatsPage .secondaryPalette.bPageBlock{
+background-color: #EDEDED;
+}
+//.accountTab .secondaryPalette, .individualPalette .accountBlock .secondaryPalette{
+//border-color: #EDEDED;
+//}
+
+body{
+//background-color: #EDEDED;
+	font-size: 11px;
+}
+.pbBody .pbSubsection{
+	background: linear-gradient(#FCFCFC, #F5F5F5);
+}
+.apexp .bPageBlock .detailList{
+font-size: 11px;
+}
+select option{
+font-family: Arial,Helvetica,sans-serif;
+}
+
+</style>
+	<apex:form >
+		<apex:pageBlock id="pgBlk">
+			<apex:pageBlockSection columns="2" title="Care Case" >
+				<apex:pageblockSectionItem >
+					<apex:outputLabel style="font-weight: bold;">Outlier Prediction: </apex:outputLabel>
+				</apex:pageblockSectionItem>
+				<apex:pageblockSectionItem >
+					<apex:selectList value="{!SelectedVal}" multiselect="false"
+						size="1">
+						<apex:selectoptions value="{!Options}" />
+						<apex:actionsupport event="onchange" action="{!getInfo}"
+							reRender="panel1, panel2, panel3, panel4, panel5"
+							status="statusId" />
+					</apex:selectList>
+				</apex:pageblockSectionItem>
+			</apex:pageBlockSection>
+			<apex:actionStatus startText="In progress..." id="statusId" />
+
+
+			<apex:outputPanel id="panel1">
+				<apex:outputText rendered="{!AND(isDispOpt1, !isDispOpt2, !isDispOpt3, !isDispOpt4)}">
+					<table align="center" style="border:1px solid black;">
+						<tbody>
+							<tr height="20" style="height: 20px;">
+								<td colspan="1" rowspan="1" height="20"
+									style="height: 20px; font-size: 11px; color: black; font-weight: 400; text-decoration: none;">
+									Date of Payment<br /> <b>- Sep 12, 2013</b>
+								</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									Subscribed to 'Payment made would get applied in the coming
+									bill cycle.' Text Messaging on Sep 12, 2013 at 10:23 PM MST via
+									pcmag.com</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									Value <br /> <b>$71.00</b>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<br />
+					<table align="center" cellpadding="0" cellspacing="0" width="321" style="text-align: center; border:1px solid black;">
+						<tbody>
+							<tr height="20" style="height: 20px; background-color: white;">
+								<td colspan="1" rowspan="1" height="20"
+									style="border:1px solid black; height: 20px; width: 75px; font-size: 11px; color: #002060; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									BillCycle</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; width: 92px; font-size: 11px; color: #002060; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									BillAmount</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; width: 76px; font-size: 11px; color: #002060; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									DueDate</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; width: 79px; font-size: 11px; color: #002060; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									PaidDate</td>
+							</tr>
+							<tr height="20" style="height: 20px;">
+								<td colspan="1" rowspan="1" height="20"
+									style="border:1px solid black; height: 20px; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									Feb-14</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									$250</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									11-Mar</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									05-Mar</td>
+							</tr>
+							<tr height="20" style="height: 20px;">
+								<td colspan="1" rowspan="1" height="20"
+									style="border:1px solid black; height: 20px; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									Mar-14</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									$257</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									11-Apr</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									05-Mar</td>
+							</tr>
+							<tr height="20" style="height: 20px;">
+								<td colspan="1" rowspan="1" height="20"
+									style="border:1px solid black; height: 20px; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									Apr-14</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									$251</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									11-May</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									05-Mar</td>
+							</tr>
+							<tr height="20" style="height: 20px;">
+								<td colspan="1" rowspan="1" height="20"
+									style="border:1px solid black; height: 20px; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									May-14</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									$358</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									11-Jun</td>
+								<td colspan="1" rowspan="1"
+									style="border:1px solid black; font-size: 11px; color: red; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+									Not Yet</td>
+							</tr>
+						</tbody>
+					</table>
+					<br />
+				</apex:outputText>
+				</apex:outputpanel>
+
+				<apex:outputPanel id="panel2">
+					<apex:outputText rendered="{!AND(!isDispOpt1, isDispOpt2, !isDispOpt3, !isDispOpt4)}">
+						<table align="center" style="border: 1px solid black;">
+							<tbody>
+								<tr>
+									<td>Effective Bill Date<br /> <b>- Oct 10, 2013</b></td>
+									<td>Subscribed to '"Buy Additional Subsription to avail
+										the Discount: 1st - All South America free dailing (Not valid
+										for Argentina) 2nd - Country Specific free dailling (Not valid
+										for Argentina)"' Text Messaging on Oct 10, 2013 at 10:23 PM
+										MST via pcmag.com</td>
+									<td>Value<br /> <b>$85.00</b></td>
+									<td>2<br /> 2 Conversations past 48 hours
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</apex:outputText>
+				</apex:outputpanel>
+
+				<apex:outputPanel id="panel3">
+					<apex:outputText rendered="{!isDispOpt3}">
+							<table align="center" cellpadding="0" cellspacing="0" width="321" style="text-align: center; ">
+								<tbody>
+									
+									<tr height="20" style="height: 20px; background-color: white;">
+										<td colspan="1" rowspan="1" height="20"
+											style="border:1px solid black; height: 20px; width: 75px; font-size: 11px; color: #002060; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											Bill No</td>
+										<td colspan="1" rowspan="1" height="20"
+											style="border:1px solid black; height: 20px; width: 75px; font-size: 11px; color: #002060; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											BillCycle</td>
+										<td colspan="1" rowspan="1"
+											style="border:1px solid black; width: 92px; font-size: 11px; color: #002060; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											BillAmount</td>
+										<td colspan="1" rowspan="1"
+											style="border:1px solid black; width: 76px; font-size: 11px; color: #002060; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											DueDate</td>
+										<td colspan="1" rowspan="1"
+											style="border:1px solid black; width: 79px; font-size: 11px; color: #002060; font-weight: 700; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											PaidDate</td>
+									</tr>
+									<apex:repeat var="history" value="{!billingHistorys}">
+									<tr height="20" style="height: 20px;">
+										<td colspan="1" rowspan="1" height="20"
+											style="border:1px solid black; height: 20px; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											{!history.name}</td>
+										<td colspan="1" rowspan="1" height="20"
+											style="border:1px solid black; height: 20px; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+												<apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+													<apex:param value="{!history.Bill_Cycle__c}" />
+												</apex:outputText> </td>
+										<td colspan="1" rowspan="1"
+											style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											{!history.Bill_Amount__c}</td>
+										<td colspan="1" rowspan="1"
+											style="border:1px solid black; font-size: 11px; color: black; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											<apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+													<apex:param value="{!history.Due_Date__c}" />
+												</apex:outputText></td>
+										<td colspan="1" rowspan="1"
+											style="border:1px solid black; font-size: 11px; color: {!IF(history.Paid_Date__c == null, 'red', 'black')}; font-weight: 400; text-decoration: none; font-family: Arial,Helvetica,sans-serif;;">
+											<apex:outputText value="{0,date,MM'/'dd'/'yyyy}" rendered="{!(history.Paid_Date__c != null)}">
+													<apex:param value="{!history.Paid_Date__c}" />
+												</apex:outputText>
+											<apex:outputText value="Not Yet!" rendered="{!(history.Paid_Date__c == null)}" />		
+										</td>
+									</tr>
+									</apex:repeat>
+								</tbody>
+							</table>
+						</apex:outputText>
+				</apex:outputpanel>
+
+				<apex:outputPanel id="panel4">
+					<apex:outputText rendered="{!AND(!isDispOpt1, !isDispOpt2, !isDispOpt3, isDispOpt4)}">
+
+								<table align="center" style="border: 1px solid black;">
+									<tr>
+										<td>Verify if adjustment was applied after the bill
+											cycle.<br /> <b>- Nov 18, 2013</b>
+										</td>
+										<td>Subscribed to 'If Not, Create a ticket for Billing
+											team/Account team to rectify missed Adjustment' Text
+											Messaging on Nov 18, 2013 at 10:23 PM MST via pcmag.com</td>
+										<td>Value <br /> <b>$96.00</b>
+										</td>
+										<td>2<br /> Conversations past 48 hours
+										</td>
+									</tr>
+								</table>
+							</apex:outputText>
+				</apex:outputpanel>
+				<apex:outputPanel id="panel5" rendered="false">
+					
+					<apex:pageBlockSection columns="1"  title="Resolution"
+						rendered="{!OR(isDispOpt1, isDispOpt2, isDispOpt3, isDispOpt4)}">
+						<apex:pageBlockSectionItem >
+							<apex:inputTextarea value="{!txtArea}" id="txtArea" cols="50" 
+								rows="3" label="Resolution" />
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem >
+							<!-- input type="button" style="background: linear-gradient(#5CAFD6, #2F97CA); color: white; 	align-self: flex-end; font-weight: normal; width: 100px; border-radius: 4px;" value="Resolve" -->
+							<input class="btn" value="Resolve" style="background: linear-gradient(#5CAFD6, #2F97CA); color: white;  align-self: flex-end; font-weight: inherit; width: 100px; border-radius: 4px;font-family: Arial,Helvetica,sans-serif;" type="button"/>
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+				</apex:outputpanel>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

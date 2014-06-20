@@ -1,0 +1,55 @@
+<apex:page standardController="Account" extensions="AccCrntrl_new"
+	sidebar="false">
+	<!--<apex:iframe src="{!URLFOR($Resource.CTI)}" scrolling="false"   width="20%"/> -->
+	<table width="100%" border="1">
+		<tr height="80%">
+			<td width="20%"><apex:iframe src="{!URLFOR($Resource.CTI)}"
+					scrolling="false" id="theIframe" /></td>
+			<td width="80%"><apex:iframe src="/apex/offerpage?id=0019000000vC0tV" scrolling="false"
+					id="theIframe1" /></td>
+
+		</tr>
+		<tr>
+			<td width="20%"><apex:iframe src="" scrolling="true" height="0%">
+					<analytics:reportChart reportId="00O90000006kT9Y" size="tiny"></analytics:reportChart>
+				</apex:iframe></td>
+			<td width="90%" height="0%"><apex:iframe src="https://www.salesforce.com" scrolling="false" id="theIframe3" />
+			</td>
+		</tr>
+	</table>
+	<!-- <apex:iframe src="https://ap1.salesforce.com/01Z90000000mIKU" scrolling="true" id="theIframe"/>  -->
+
+	<!--
+   <table  border="2" >        
+    
+   <tr > 
+     
+    <table border="2" >
+     <tr >
+      <td  height="0%" >
+       <table border="2" >
+         <tr >  <td><apex:iframe src="{!URLFOR($Resource.CTI)}" scrolling="false"  /> </td>
+         </tr>
+         <tr > <td> <apex:iframe src="{!URLFOR($Resource.CTI)}" scrolling="false"  /> </td>
+         </tr>
+       </table>
+      </td>
+      <td  height="0%" >
+      <apex:iframe src="/apex/offerpage?id=0019000000vC0tV" scrolling="false" id="theIframe1" /> 
+      </td>
+     </tr>
+     </table>
+  
+    </tr>
+  
+    
+   <tr width="100%">
+     <td width="10%"><apex:iframe src="" scrolling="true"  height="0%">   
+        <analytics:reportChart reportId="00O90000006kT9Y"></analytics:reportChart> 
+        </apex:iframe>  </td>
+        <td width="90%" height="0%"> 
+        <apex:iframe src="https://www.salesforce.com" scrolling="false" id="theIframe3"  /> </td>
+   </tr>
+   </table> 
+     -->
+</apex:page>

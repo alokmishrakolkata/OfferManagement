@@ -1,0 +1,66 @@
+<apex:page Controller="ATT_CreateOrderSubTabController" showheader="false"
+    sidebar="false" tabstyle="Order">
+    
+    
+	<apex:sectionHeader title="new Order" subtitle="Order"/>
+	<apex:form id="idForm" >
+	
+		<apex:pageBlock id="idPageBlock">
+			<apex:pageBlockSection title="New Order">
+			
+				<apex:pageBlockSectionItem >
+					<apex:outputlabel value="Account" />
+					<apex:inputField value="{!newOrder.accountid}"></apex:inputField> 
+					
+					
+					
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="Effective Date "/>
+					
+					<apex:inputField value="{!newOrder.EffectiveDate}"></apex:inputField>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputlabel value="Status" />
+					<apex:inputField value="{!newOrder.Status}"></apex:inputField>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputlabel value="Description" />
+					<apex:inputField value="{!newOrder.Description}"></apex:inputField>
+				</apex:pageBlockSectionItem>
+			
+			</apex:pageBlockSection>
+			
+			<apex:pageBlockSection title="Order Products" columns="1">
+				<apex:pageBlockTable var="orderProduct" value="{!orderProducts}">
+					<apex:column >
+						<apex:facet name="header">Product</apex:facet>
+						<apex:outputField value="{!orderProduct.Pricebookentry.product2Id}"/>  
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header"><font color="red">Quantity</font></apex:facet>
+						<apex:inputField value="{!orderProduct.Quantity}"/>
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header"><font color="red">Unit Price</font></apex:facet>
+						<apex:inputField value="{!orderProduct.UnitPrice}"/>
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header">List Price</apex:facet>
+						<apex:outputField value="{!orderProduct.Pricebookentry.UnitPrice}"/>  
+					</apex:column>
+					<apex:column >
+						<apex:inputField value="{!orderProduct.Description}"/>
+					</apex:column>
+				
+				</apex:pageBlockTable>
+			
+			</apex:pageBlockSection>
+
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton action="{!createOrder}" value="Create Order"  />
+			</apex:pageBlockButtons>
+		</apex:pageBlock>
+	</apex:form>
+
+</apex:page>
